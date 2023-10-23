@@ -14,7 +14,7 @@ def recebe_eventos():
 def desenha(window):
     window.fill((0,0,0))
     
-    
+    window.blit(pygame.image.load())
     pygame.display.update()
 
 def game_loop(window):
