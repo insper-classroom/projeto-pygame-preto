@@ -15,12 +15,15 @@ def inicializa():
     dicionario['bem vindo'] = pygame.image.load('imagens/bem vindos.png')
 
     return window,dicionario
+    
+   
 
 def recebe_eventos():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
     return True
+
 
 def desenha(window,dicionario):
     window.fill((0,149,0))
@@ -36,3 +39,6 @@ def game_loop(window,dicionario):
     
 w,d= inicializa()
 game_loop(w,d)
+
+
+    
