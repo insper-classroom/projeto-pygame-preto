@@ -1,1 +1,56 @@
 import pygame
+def inicializa():
+    #janela
+    pygame.init()
+    window = pygame.display.set_mode((800,700))
+    pygame.display.set_caption('JOGO DA COBRINHA')
+    dicionario = {}
+    #Add parede em dic
+    dicionario['parede'] = pygame.image.load('imagens/parede.png')
+    dicionario['parede'] = pygame.transform.scale(dicionario['parede'],(30,770))
+    dicionario['parede1'] = pygame.image.load('imagens/parede.png')
+    dicionario['parede1'] = pygame.transform.scale(dicionario['parede1'],(900,30))
+    #Add cobra
+    tamanho_quadrado = 10
+    velocidade_cobra = 15
+    tamanho_cobra = 1
+    pixels = []
+    dicionario['tamanho_quadrado'] = tamanho_quadrado
+    dicionario['velocidade_cobra'] = velocidade_cobra
+    dicionario['tamanho_cobra'] = tamanho_cobra
+    dicionario['pixels'] = pixels
+    #COBRINHA ANDANDO
+    dicionario['velocidadex'] = 0 
+    dicionario['velocidadex'] = 0 
+    #relogio
+    relogio = pygame.time.Clock()
+    dicionario['relogio'] = relogio
+   
+
+    return window,dicionario
+
+def recebe_eventos():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return False
+    return True
+
+def desenha(window,dicionario):
+
+    window.fill((255,149,0))
+    
+    #desenha borda
+    window.blit(dicionario['parede'],(0,0))
+    window.blit(dicionario['parede'],(770,0))
+    window.blit(dicionario['parede1'],(0,0))
+    window.blit(dicionario['parede1'],(0,670))
+
+
+    pygame.display.update()
+
+def game_loop(window,dicionario):
+    while recebe_eventos():
+        desenha(window,dicionario)
+    
+w,d= inicializa()
+game_loop(w,d)

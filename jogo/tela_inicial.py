@@ -1,4 +1,5 @@
 import pygame
+
 def inicializa():
     #janela
     pygame.init()
@@ -49,6 +50,7 @@ def game_loop(window,dicionario):
     
 w,d= inicializa()
 game_loop(w,d)
+# tela_jogo.game_loop(w,d) #IMPORTANTE PARA TROCAR DE TELAS
 
 
     
