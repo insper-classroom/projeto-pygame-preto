@@ -1,11 +1,16 @@
 import pygame
 def inicializa():
+    #janela
     pygame.init()
-    window = pygame.display.set_mode((800,800))
+    window = pygame.display.set_mode((800,700))
     pygame.display.set_caption('JOGO DA COBRINHA')
     assets = {'fonte16':pygame.font.Font(pygame.font.get_default_font(),16)
     }
-    return window, assets
+    dicionario = {}
+
+    #desenho da cobra
+    
+    return window, dicionario
 
 def recebe_eventos():
     for event in pygame.event.get():
