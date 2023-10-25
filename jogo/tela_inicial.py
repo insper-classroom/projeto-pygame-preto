@@ -19,6 +19,7 @@ def inicializa():
 
     #IMAGEM START
     dicionario['start'] = pygame.image.load('imagens/start.png')
+    
 
     return window,dicionario
     
