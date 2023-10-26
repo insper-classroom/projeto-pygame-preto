@@ -1,4 +1,5 @@
 import pygame
+
 def inicializa():
     #janela
     pygame.init()
@@ -18,6 +19,7 @@ def inicializa():
 
     #IMAGEM START
     dicionario['start'] = pygame.image.load('imagens/start.png')
+    
 
     return window,dicionario
     
@@ -49,6 +51,7 @@ def game_loop(window,dicionario):
     
 w,d= inicializa()
 game_loop(w,d)
+# tela_jogo.game_loop(w,d) #IMPORTANTE PARA TROCAR DE TELAS
 
 
     
