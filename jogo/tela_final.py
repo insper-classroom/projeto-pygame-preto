@@ -8,8 +8,8 @@ def inicializa():
     dicionario = {}
     dicionario['game over'] = pygame.image.load('imagens/game over.png')
 
-    dicionario['caveira'] = pygame.image.load('imagens/caveira.png')
-    dicionario['caveira'] = pygame.transform.scale(dicionario['caveira'],(130,130))
+    dicionario['img_cobra_morta'] = pygame.image.load('imagens/cobra_morta.png')
+    dicionario['cobra_morta'] = pygame.transform.scale(dicionario['img_cobra_morta'],(300,300))
 
     dicionario['fonte'] = pygame.font.Font('fonte/retro_computer_personal_use.ttf',15)
 
@@ -26,10 +26,10 @@ def desenha(window,dicionario):
     
     window.blit(dicionario['game over'],(120,50))
 
-    window.blit(dicionario['caveira'],(300,220))
+    window.blit(dicionario['cobra_morta'],(250,220))
 
     texto = dicionario['fonte'].render('Pressione ENTER para recomecar',False,(0,0,0))
-    window.blit(texto,(200,480))
+    window.blit(texto,(210,530))
 
     pygame.display.update()
 
