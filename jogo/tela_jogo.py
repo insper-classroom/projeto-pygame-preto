@@ -81,7 +81,7 @@ import random
 # window = pygame.display.set_mode((1200, 800))
 relogio = pygame.time.Clock()
 
-# cores RGB
+# cores 
 preta = (0, 0, 0)
 branca = (255, 255, 255)
 vermelha = (255, 0, 0)
@@ -177,10 +177,10 @@ def rodar_jogo(window, dicionario):
         # atualizacao da tela
         pygame.display.update()
 
-        # criar uma nova comida
+        # criar nova comida
         if x == dicionario['comida_x'] and y == dicionario['comida_y']:
             tamanho_cobra += 1
-            dicionario = gerar_comida()
+            dicionario = gerar_comida(dicionario)
 
         relogio.tick(velocidade_jogo)
 
