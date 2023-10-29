@@ -1,56 +1,72 @@
 import pygame
 from random import randint
 
+VELOCIDADE_X = 1
+VELOCIDADE_Y = 0.75
+TILE_FRAME = 50
+
 def inicializa():
     pygame.init()
     widht = 1200
     height = 800
+    QUANT_COELHOS = 3
 
     window = pygame.display.set_mode((widht,height))
     pygame.display.set_caption('JOGO DA COBRINHA')
 
-    estado={
+    estado = {
         'pos_cobra': [(widht/2),(height/2)],
-        'pos_parede' : [[0,0]],
-        'pos_rabo' : [(widht/2)+12,(height/2) - 59]
+        'pos_rabo' : [(widht/2) + 12,(height/2) - 59],
+        'velocidade' : [0, VELOCIDADE_Y],
+        'pontuacao' : 0,
+        'xp' : 0
         }
     #posicao aleatoria do coelho
-    lista= []
-    for i in range(3):
-        x = randint(0,1150)
-        y = randint(0,750)
-        dici = {'x': x,'y':y}
-        lista.append(dici)
+    pos_coelho = []
+    for _ in range(QUANT_COELHOS):
+        x = randint(100,1100)
+        y = randint(100,700)
+        pos= {'x':x ,'y':y}
+        # pos_coelho = pygame.Rect((x, y), (40, 50))
+        pos_coelho.append(pos)
 
     #posicao aleatoria da maçã
-    l = []
-    for i in range(1):
-        x = randint(0,1150)
-        y = randint(0,750)
-        d = {'x': x,'y':y}
-        l.append(d)
-    
-    #parede
-    for y1 in range(0,height,50):
-        pos = [0,y1]
-        estado['pos_parede'].append(pos)
-    
-    for x1 in range(0,widht,40):
-        pos = [x1,0]
-        estado['pos_parede'].append(pos)
+    x = randint(100,1100)
+    y = randint(100,700)
+    pos_maca = pygame.Rect((x, y), (30, 40))
 
-    for y2 in range(0,height,50):
-        pos = [(1200-50),y2]
-        estado['pos_parede'].append(pos)
+    #posicao aleatoria da maca especial
+    x = randint(100,1100)
+    y = randint(100,700)
+    pos_maca_especial = pygame.Rect((x, y), (30, 40))
+            
+    #parede    
+    parede = pygame.Rect((0,0), (TILE_FRAME, TILE_FRAME))
+    estado['pos_parede'] = [parede]
     
-    for x2 in range(0,widht,40):
-        pos = [x2,(800-50)]
-        estado['pos_parede'].append(pos)
+    for y1 in range(0,height,TILE_FRAME):
+        parede = pygame.Rect((0, y1), (TILE_FRAME, TILE_FRAME))
+        estado['pos_parede'].append(parede)
+    
+    for x1 in range(0,widht,TILE_FRAME):
+        parede = pygame.Rect((x1, 0), (TILE_FRAME, TILE_FRAME))
+        estado['pos_parede'].append(parede)
+
+    for y2 in range(0,height,TILE_FRAME):
+        parede = pygame.Rect((widht-50, y2), (TILE_FRAME,TILE_FRAME))
+        estado['pos_parede'].append(parede)
+    
+    for x2 in range(0,widht,TILE_FRAME):
+        parede = pygame.Rect((x2, height-TILE_FRAME), (TILE_FRAME, TILE_FRAME))
+        estado['pos_parede'].append(parede)
 
     dicionario = {}
 
-    dicionario['coelho_bom'] = lista
-    dicionario['maca_vermelha'] = l
+    dicionario['fonte'] = pygame.font.Font('fonte/perfect_dos_vga_437/Perfect DOS VGA 437 Win.ttf',20)
+
+    dicionario['pos_coelho'] = pos_coelho
+    dicionario['pos_maca'] = pos_maca
+    dicionario['pos_maca_especial'] = pos_maca_especial
 
     dicionario['parede'] = pygame.image.load('imagens/parede2.png')
 
@@ -61,104 +77,97 @@ def inicializa():
     dicionario['cobra_rabo'] = pygame.transform.scale(dicionario['img_cobra_rabo'],(30,60))
 
     dicionario['img_coelho'] = pygame.image.load('imagens/coelho.png')
-    dicionario['coelho'] = pygame.transform.scale(dicionario['img_coelho'],(40,50))
+    dicionario['coelho_bom'] = pygame.transform.scale(dicionario['img_coelho'],(40,50))
+
+    dicionario['img_coelho_mal'] = pygame.image.load('imagens/coelho_malvado.png')
+    dicionario['coelho_mal'] = pygame.transform.scale(dicionario['img_coelho_mal'],(40,50))
 
     dicionario['img_maca'] = pygame.image.load('imagens/maca.png')
     dicionario['maca'] = pygame.transform.scale(dicionario['img_maca'],(30,40))
 
+    dicionario['img_maca_especial'] = pygame.image.load('imagens/maca_especial.png')
+    dicionario['maca_especial'] = pygame.transform.scale(dicionario['img_maca_especial'],(30,40))
+
     dicionario['img_cobra_corpo'] = pygame.image.load('imagens/cobra_corpo.png')
     dicionario['cobra_corpo'] = pygame.transform.scale(dicionario['img_cobra_corpo'],(30,60))
+
+    dicionario['int'] = 'sons/8bit-music-for-game-68698.mp3'
+    pygame.mixer.music.load(dicionario['int'])
+    pygame.mixer.music.play()
+
+    dicionario['game_over'] = pygame.mixer.Sound('sons/game-over-arcade-6435.mp3')
+
+    dicionario['comida'] = pygame.mixer.Sound('sons/eating-sound-effect-36186.mp3')
 
     return window,dicionario,estado 
 
 def recebe_eventos(estado,dicionario,window):
+    # movimentação da cobra
+    estado['pos_cobra'][0] += estado['velocidade'][0]
+    estado['pos_cobra'][1] += estado['velocidade'][1]
+    estado['pos_rabo'][0] += estado['velocidade'][0]
+    estado['pos_rabo'][1] += estado['velocidade'][1]
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
         
         if event.type == pygame.KEYDOWN :
-            ultima_tecla = event.key
-
             if event.key == pygame.K_RIGHT:
-                estado['pos_cobra'][0] += 50
-                estado['pos_rabo'][0] += 50
+                estado['velocidade'][0] = VELOCIDADE_X
+                estado['velocidade'][1] = 0
 
             elif event.key == pygame.K_LEFT:
-                estado['pos_cobra'][0] -= 50
-                estado['pos_rabo'][0] -= 50
+                estado['velocidade'][0] = -VELOCIDADE_X
+                estado['velocidade'][1] = 0
                 
             elif event.key == pygame.K_DOWN:
-                estado['pos_cobra'][1] += 50
-                estado['pos_rabo'][1] += 50
+                estado['velocidade'][0] = 0
+                estado['velocidade'][1] = VELOCIDADE_Y
             
             elif event.key == pygame.K_UP:
-                estado['pos_cobra'][1] -= 50
-                estado['pos_rabo'][1] -= 50
+                estado['velocidade'][0] = 0
+                estado['velocidade'][1] = - VELOCIDADE_Y
     
-        #colisão da cobra c/ parede
-        retan_cobra = pygame.Rect((estado['pos_cobra'][0],estado['pos_cobra'][1]),(50,50))
-        # retan_rabo = pygame.Rect((estado['pos_cobra'][0],estado['pos_cobra'][1]),(30,60))
-        retan_parede = []
-
-        for p in estado['pos_parede']:
-            retangulo = pygame.Rect((p[0],p[1]),(50,50))
-            retan_parede.append(retangulo)
-
+    #colisão da cobra c/ parede
+    retan_cobra = pygame.Rect((estado['pos_cobra'][0],estado['pos_cobra'][1]),(TILE_FRAME,TILE_FRAME))  
+    for parede in estado['pos_parede']:
+        if retan_cobra.colliderect(parede):
+            print("Colidiu")
+            dicionario['game_over'].play()
+            return False
         
-        for retangulo in retan_parede:
-            if retan_cobra.colliderect(retangulo):
+    #colisao da cobra com a maçã
+    retan_maca = pygame.Rect((dicionario['pos_maca'][0], dicionario['pos_maca'][1]),(30,40))
 
-                if ultima_tecla == pygame.K_RIGHT:
-                    estado['pos_cobra'][0] -= 50
-                    estado['pos_rabo'][0] -= 50
+    if retan_cobra.colliderect(retan_maca):
+        dicionario['comida'].play()
+        estado["pontuacao"] += 1
+        x = randint(100,1100)
+        y = randint(100,700)
+        nova_maca = pygame.Rect((x, y), (30, 40))
+        dicionario['pos_maca'] = nova_maca
 
-                elif ultima_tecla == pygame.K_LEFT:
-                    estado['pos_cobra'][0] += 50
-                    estado['pos_rabo'][0] += 50
-                    
-                elif ultima_tecla == pygame.K_DOWN:
-                    estado['pos_cobra'][1] -= 25
-                    estado['pos_rabo'][1] -= 25
-                
-                elif  ultima_tecla== pygame.K_UP:
-                    estado['pos_rabo'][1] += 25
-                    estado['pos_cobra'][1] += 25
+    #colisao da cobra com a maçã especial
+    retan_maca_especial = pygame.Rect((dicionario['pos_maca_especial'][0], dicionario['pos_maca_especial'][1]),(30,40))
 
-        #colisao da cobra com a maçã
-        retan_cobra = retan_cobra = pygame.Rect((estado['pos_cobra'][0],estado['pos_cobra'][1]),(50,50))
-        retan_maca = []
-
-        for mv in dicionario['maca_vermelha']:
-            retangulo1 = pygame.Rect((mv['x'],mv['y']),(30,40))
-            retan_maca.append(retangulo1)
-        
-        for retangulo1 in retan_maca:
-            if retan_cobra.colliderect(retangulo1):
-                if ultima_tecla == pygame.K_RIGHT:
-                    estado['pos_cobra'][0] -= 50
-                    estado['pos_rabo'][0] -= 50
-                    dicionario['maca_vermelha'].remove({'x':retangulo1.x,'y':retangulo1.y})
-                    # window.blit(dicionario['cobra_corpo'])
-
-                elif ultima_tecla == pygame.K_LEFT:
-                    estado['pos_cobra'][0] += 50
-                    estado['pos_rabo'][0] += 50
-                    dicionario['maca_vermelha'].remove({'x':retangulo1.x,'y':retangulo1.y})
-                    
-                elif ultima_tecla == pygame.K_DOWN:
-                    estado['pos_cobra'][1] -= 25
-                    estado['pos_rabo'][1] -= 25
-                    dicionario['maca_vermelha'].remove({'x':retangulo1.x,'y':retangulo1.y})
-                
-                elif  ultima_tecla== pygame.K_UP:
-                    estado['pos_cobra'][1] += 25
-                    estado['pos_rabo'][1] += 25
-                    dicionario['maca_vermelha'].remove({'x':retangulo1.x,'y':retangulo1.y})
+    if retan_cobra.colliderect(retan_maca_especial):
+        dicionario['comida'].play()
+        estado['xp'] += 5
+        x = randint(50,500)
+        y = randint(50,100)
+        nova_maca_especial = pygame.Rect((x, y), (30, 40))
+        dicionario['pos_maca_especial'] = nova_maca_especial
+    
+    #colisao da cobra com o coelho
+    # for coelho in dicionario['pos_coelho']:
+    #     if retan_cobra.collidedict(coelho):
+    #         print("colidiu")
+    #         return False
 
     return True
 
 def desenha(window,dicionario,estado):
-
     window.fill((0,149,0))
 
     window.blit(dicionario['cobra'],(estado['pos_cobra'][0],estado['pos_cobra'][1]))
@@ -167,17 +176,23 @@ def desenha(window,dicionario,estado):
     for parede in estado['pos_parede']:
         window.blit(dicionario['parede'],parede)
 
-    for coelho in dicionario['coelho_bom']:
-        window.blit(dicionario['coelho'],(coelho['x'],coelho['y']))
+    for coelho in dicionario['pos_coelho']:
+        window.blit(dicionario['coelho_bom'],(coelho['x'],coelho['y']))
 
-    for maca in dicionario['maca_vermelha']:
-        window.blit(dicionario['maca'],(maca['x'],maca['y']))
+    window.blit(dicionario['maca'],(dicionario['pos_maca'][0],dicionario['pos_maca'][1]))
 
+    window.blit(dicionario['maca_especial'],(dicionario['pos_maca_especial'][0],dicionario['pos_maca_especial'][1]))
+
+    texto = dicionario['fonte'].render(f'POINTS: {estado["pontuacao"]}',False,(0,0,0))
+    window.blit(texto,(10,10))
+
+    texto = dicionario['fonte'].render(f'XP: {estado["xp"]}',False,(0,0,0))
+    window.blit(texto,(10,30))
     pygame.display.update()
 
 def game_loop(window,dicionario,estado):
     while recebe_eventos(estado,dicionario,window):
         desenha(window,dicionario,estado)
     
-w,d,e= inicializa()
+w,d,e = inicializa()
 game_loop(w,d,e)
