@@ -1,8 +1,11 @@
 import pygame
 
+widht = 1200
+height = 800
 def inicializa():
+
     pygame.init()
-    window = pygame.display.set_mode((800,700))
+    window = pygame.display.set_mode((widht,height))
     pygame.display.set_caption('JOGO DA COBRINHA')
 
     dicionario = {}
@@ -11,7 +14,7 @@ def inicializa():
     dicionario['img_cobra_morta'] = pygame.image.load('imagens/cobra_morta.png')
     dicionario['cobra_morta'] = pygame.transform.scale(dicionario['img_cobra_morta'],(300,300))
 
-    dicionario['fonte'] = pygame.font.Font('fonte/retro_computer_personal_use.ttf',15)
+    dicionario['fonte'] = pygame.font.Font('fonte/perfect_dos_vga_437/Perfect DOS VGA 437 Win.ttf',25)
 
     return window,dicionario
 
@@ -24,12 +27,12 @@ def recebe_eventos():
 def desenha(window,dicionario):
     window.fill((0,149,0))
     
-    window.blit(dicionario['game over'],(120,50))
+    window.blit(dicionario['game over'],(widht - 850,height - 750))
 
-    window.blit(dicionario['cobra_morta'],(250,220))
+    window.blit(dicionario['cobra_morta'],(450,220))
 
-    texto = dicionario['fonte'].render('Pressione ENTER para recomecar',False,(0,0,0))
-    window.blit(texto,(210,530))
+    texto = dicionario['fonte'].render('Pressione ENTER para recomeçar',False,(0,0,0))
+    window.blit(texto,(390,530))
 
     pygame.display.update()
 
