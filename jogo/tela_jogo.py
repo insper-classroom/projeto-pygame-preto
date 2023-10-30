@@ -112,6 +112,8 @@ def desenhar_pontuacao(window, pontuacao):
     window.blit(texto, [1, 1])
 
 def selecionar_velocidade(tecla):
+    velocidade_x = 0
+    velocidade_y = 0
     if tecla == pygame.K_DOWN:
         velocidade_x = 0
         velocidade_y = tamanho_quadrado
@@ -146,7 +148,11 @@ def rodar_jogo(window, dicionario):
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 fim_jogo = True
+                return False
             elif evento.type == pygame.KEYDOWN:
+                if evento.type == pygame.KEYDOWN:
+                    if evento.key == pygame.K_ESCAPE:
+                        return False
                 velocidade_x, velocidade_y = selecionar_velocidade(evento.key)
 
         # desenhar_comida

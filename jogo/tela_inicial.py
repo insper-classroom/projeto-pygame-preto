@@ -24,7 +24,7 @@ def inicializa():
     dicionario['bem vindo'] = pygame.image.load('imagens/bem vindos.png')
 
     #IMAGEM START
-    dicionario['start'] = pygame.image.load('imagens/botao_start-16.png.png')
+    dicionario['start'] = pygame.image.load('imagens/botao_start.png')
     
 
     return window,dicionario
@@ -37,6 +37,8 @@ def recebe_eventos():
         if event.type == pygame.QUIT:
             return False
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return False
             if event.key  == pygame.K_RETURN:
                 vaijogo = True
         if event.type == pygame.KEYDOWN:        
@@ -64,7 +66,9 @@ def desenha(window,dicionario):
 def game_loop_inicial(window,dicionario):
     while recebe_eventos():
         if vaijogo:
-            tela_jogo.rodar_jogo(window,dicionario)#IMPORTANTE PARA TROCAR DE TELAS
+            fecha_jogo = tela_jogo.rodar_jogo(window,dicionario)#IMPORTANTE PARA TROCAR DE TELAS
+            if fecha_jogo == False:
+                return False
         else:
             desenha(window,dicionario)
 
