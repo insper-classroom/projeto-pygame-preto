@@ -73,6 +73,9 @@
 # w,d= inicializa()
 # game_loop(w,d)
 
+
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 import pygame
 import random
 
@@ -86,28 +89,69 @@ preta = (0, 0, 0)
 branca = (255, 255, 255)
 vermelha = (255, 0, 0)
 verde = (0, 255, 0)
+verde_2 = (0, 149,0)
 
 # parametros da cobrinha
-tamanho_quadrado = 20
+tamanho_quadrado = 50
 velocidade_jogo = 15
+imagem = {}
+imagem['parede'] = pygame.image.load('imagens/parede2.png')
+
 
 def gerar_comida(dicionario):
-    comida_x = round(random.randrange(0, 1200 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
-    comida_y = round(random.randrange(0, 800 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
+    comida_x = round(random.randrange(50, 1150 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
+    comida_y = round(random.randrange(50, 750 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
     dicionario['comida_x'] = comida_x
     dicionario['comida_y'] = comida_y
 
     return dicionario
 
+
+def gerar_parede(dicionario):
+    parede = pygame.Rect((0,0),(tamanho_quadrado,tamanho_quadrado))
+    dicionario['pos_parede'] = [parede]
+
+    for y1 in range(0,800,tamanho_quadrado):
+        parede = pygame.Rect((0, y1), (tamanho_quadrado, tamanho_quadrado))
+        dicionario['pos_parede'].append(parede)
+    
+    for x1 in range(0,1200,tamanho_quadrado):
+        parede = pygame.Rect((x1, 0), (tamanho_quadrado, tamanho_quadrado))
+        dicionario['pos_parede'].append(parede)
+
+    for y2 in range(0,800,tamanho_quadrado):
+        parede = pygame.Rect((1200-50, y2), (tamanho_quadrado,tamanho_quadrado))
+        dicionario['pos_parede'].append(parede)
+    
+    for x2 in range(0,1200,tamanho_quadrado):
+        parede = pygame.Rect((x2, 800-tamanho_quadrado), (tamanho_quadrado, tamanho_quadrado))
+        dicionario['pos_parede'].append(parede)
+    return dicionario
+
+def gerar_pedra(dicionario):
+    pedra_x = round(random.randrange(0, 1200 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
+    pedra_y = round(random.randrange(0, 800 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
+    dicionario['pedra_x'] = pedra_x
+    dicionario['pedra_y'] = pedra_y
+
+    return dicionario
+
 def desenhar_comida(window, tamanho, dicionario):
-    pygame.draw.rect(window, verde, pygame.Rect(dicionario['comida_x'], dicionario['comida_y'], tamanho, tamanho))
+    pygame.draw.rect(window, vermelha, pygame.Rect(dicionario['comida_x'], dicionario['comida_y'], tamanho, tamanho))
+
+def desenhar_pedra(window, tamanho, dicionario):
+    pygame.draw.rect(window, preta, pygame.Rect(dicionario['pedra_x'], dicionario['pedra_y'], tamanho, tamanho))
 
 def desenhar_cobra(window, tamanho, pixels):
     for pixel in pixels:
-        pygame.draw.rect(window, branca, [pixel[0], pixel[1], tamanho, tamanho])
+        pygame.draw.rect(window, verde, [pixel[0], pixel[1], tamanho, tamanho])
+
+def desenhar_parede(window, dicionario):
+    for parede in dicionario['pos_parede']:
+        window.blit(imagem['parede'],parede)
 
 def desenhar_pontuacao(window, pontuacao):
-    fonte = pygame.font.SysFont("Helvetica", 35)
+    fonte = pygame.font.SysFont("Helvetica", 25)
     texto = fonte.render(f"Pontos: {pontuacao}", True, vermelha)
     window.blit(texto, [1, 1])
 
@@ -141,9 +185,11 @@ def rodar_jogo(window, dicionario):
     pixels = []
 
     comida = gerar_comida(dicionario)
+    pedra = gerar_pedra(dicionario)
+    parede = gerar_parede(dicionario)
 
     while not fim_jogo:
-        window.fill(preta)
+        window.fill(verde_2)
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -157,6 +203,10 @@ def rodar_jogo(window, dicionario):
 
         # desenhar_comida
         desenhar_comida(window,tamanho_quadrado,comida)
+        # desenhar pedra
+        desenhar_pedra(window,tamanho_quadrado,pedra)
+        #desenhar parede
+        desenhar_parede(window,parede)
 
         # atualizar a posicao da cobra
         if x < 0 or x >= 1200 or y < 0 or y >= 800:
