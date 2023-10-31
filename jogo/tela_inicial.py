@@ -1,6 +1,6 @@
 import pygame
 import tela_jogo
-
+pygame.mixer.init()
 window = None
 vaijogo = False
 
@@ -25,9 +25,13 @@ def inicializa():
 
     #IMAGEM START
     dicionario['start'] = pygame.image.load('imagens/botao_start.png')
-    
 
-    return window,dicionario
+    dicionario['int'] = 'sons/8bit-music-for-game-68698.mp3'
+    pygame.mixer.music.load(dicionario['int'])
+    pygame.mixer.music.play()
+    dicionario_comida = {}
+
+    return window,dicionario,dicionario_comida
     
    
 
@@ -63,10 +67,10 @@ def desenha(window,dicionario):
     
     pygame.display.update()
 
-def game_loop_inicial(window,dicionario):
+def game_loop_inicial(window,dicionario,dicionario_comida):
     while recebe_eventos():
         if vaijogo:
-            fecha_jogo = tela_jogo.rodar_jogo(window,dicionario)#IMPORTANTE PARA TROCAR DE TELAS
+            fecha_jogo = tela_jogo.rodar_jogo(window,dicionario,dicionario_comida)#IMPORTANTE PARA TROCAR DE TELAS
             if fecha_jogo == False:
                 return False
         else:
@@ -74,8 +78,8 @@ def game_loop_inicial(window,dicionario):
 
 
     
-w,d= inicializa()
-game_loop_inicial(w,d)
+w,d,dicionario_comida= inicializa()
+game_loop_inicial(w,d,dicionario_comida)
 
 
 

@@ -78,7 +78,7 @@
 
 import pygame
 import random
-
+pygame.mixer.init()
 # pygame.init()
 # pygame.display.set_caption("JOGO DA COBRINHA")
 # window = pygame.display.set_mode((1200, 800))
@@ -96,15 +96,22 @@ tamanho_quadrado = 50
 velocidade_jogo = 15
 imagem = {}
 imagem['parede'] = pygame.image.load('imagens/parede2.png')
+imagem['comida'] = pygame.image.load('imagens/maca.png')
+imagem['coelho'] = pygame.image.load('imagens/coelho.png')
 
 
-def gerar_comida(dicionario):
+
+
+imagem['game_over'] = pygame.mixer.Sound('sons/game-over-arcade-6435.mp3')
+
+
+def gerar_comida(dicionario_comida):
     comida_x = round(random.randrange(50, 1150 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
     comida_y = round(random.randrange(50, 750 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
-    dicionario['comida_x'] = comida_x
-    dicionario['comida_y'] = comida_y
+    dicionario_comida['comida_x'] = comida_x
+    dicionario_comida['comida_y'] = comida_y
 
-    return dicionario
+    return dicionario_comida
 
 
 def gerar_parede(dicionario):
@@ -128,19 +135,19 @@ def gerar_parede(dicionario):
         dicionario['pos_parede'].append(parede)
     return dicionario
 
-def gerar_pedra(dicionario):
-    pedra_x = round(random.randrange(0, 1200 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
-    pedra_y = round(random.randrange(0, 800 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
-    dicionario['pedra_x'] = pedra_x
-    dicionario['pedra_y'] = pedra_y
+# def gerar_pedra(dicionario):
+#     pedra_x = round(random.randrange(50, 1200 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
+#     pedra_y = round(random.randrange(50, 800 - tamanho_quadrado) / (tamanho_quadrado)) * (tamanho_quadrado)
+#     dicionario['pedra_x'] = pedra_x
+#     dicionario['pedra_y'] = pedra_y
 
     return dicionario
 
-def desenhar_comida(window, tamanho, dicionario):
-    pygame.draw.rect(window, vermelha, pygame.Rect(dicionario['comida_x'], dicionario['comida_y'], tamanho, tamanho))
+def desenhar_comida(window, tamanho, dicionario_comida):
+    pygame.draw.rect(window, vermelha, pygame.Rect(dicionario_comida['comida_x'], dicionario_comida['comida_y'], tamanho, tamanho))
 
-def desenhar_pedra(window, tamanho, dicionario):
-    pygame.draw.rect(window, preta, pygame.Rect(dicionario['pedra_x'], dicionario['pedra_y'], tamanho, tamanho))
+# def desenhar_pedra(window, tamanho, dicionario):
+#     pygame.draw.rect(window, preta, pygame.Rect(dicionario['pedra_x'], dicionario['pedra_y'], tamanho, tamanho))
 
 def desenhar_cobra(window, tamanho, pixels):
     for pixel in pixels:
@@ -170,9 +177,21 @@ def selecionar_velocidade(tecla):
     elif tecla == pygame.K_LEFT:
         velocidade_x = -tamanho_quadrado
         velocidade_y = 0
+    if tecla == pygame.K_s:
+        velocidade_x = 0
+        velocidade_y = tamanho_quadrado
+    elif tecla == pygame.K_w:
+        velocidade_x = 0
+        velocidade_y = -tamanho_quadrado
+    elif tecla == pygame.K_d:
+        velocidade_x = tamanho_quadrado
+        velocidade_y = 0
+    elif tecla == pygame.K_a:
+        velocidade_x = -tamanho_quadrado
+        velocidade_y = 0
     return velocidade_x, velocidade_y
 
-def rodar_jogo(window, dicionario):
+def rodar_jogo(window, dicionario, dicionario_comida):
     fim_jogo = False
 
     x = 1200 / 2
@@ -184,9 +203,10 @@ def rodar_jogo(window, dicionario):
     tamanho_cobra = 1
     pixels = []
 
-    comida = gerar_comida(dicionario)
-    pedra = gerar_pedra(dicionario)
-    parede = gerar_parede(dicionario)
+    comida = gerar_comida(dicionario_comida)
+    # pedra = gerar_pedra(dicionario)
+    dicionario = gerar_parede(dicionario)
+    print(dicionario)
 
     while not fim_jogo:
         window.fill(verde_2)
@@ -201,12 +221,14 @@ def rodar_jogo(window, dicionario):
                         return False
                 velocidade_x, velocidade_y = selecionar_velocidade(evento.key)
 
+    
+
         # desenhar_comida
         desenhar_comida(window,tamanho_quadrado,comida)
         # desenhar pedra
-        desenhar_pedra(window,tamanho_quadrado,pedra)
+        # desenhar_pedra(window,tamanho_quadrado,pedra)
         #desenhar parede
-        desenhar_parede(window,parede)
+        desenhar_parede(window,dicionario)
 
         # atualizar a posicao da cobra
         if x < 0 or x >= 1200 or y < 0 or y >= 800:
@@ -218,6 +240,7 @@ def rodar_jogo(window, dicionario):
         # desenhar_cobra
         pixels.append([x, y])
         if len(pixels) > tamanho_cobra:
+            
             del pixels[0]
 
         # se a cobrinha bateu no proprio corpo
@@ -234,11 +257,22 @@ def rodar_jogo(window, dicionario):
         pygame.display.update()
 
         # criar nova comida
-        if x == dicionario['comida_x'] and y == dicionario['comida_y']:
+        if x == dicionario_comida['comida_x'] and y == dicionario_comida['comida_y']:
             tamanho_cobra += 1
-            dicionario = gerar_comida(dicionario)
+            dicionario_comida = gerar_comida(dicionario_comida)
+            
 
         relogio.tick(velocidade_jogo)
+        
+        #colisão da cobra com a parede
+        for pixel in pixels:
+            retan_cobra = pygame.Rect(pixel[0], pixel[1], tamanho_quadrado, tamanho_quadrado)  
+            for parede in dicionario['pos_parede']:
+                if retan_cobra.colliderect(parede):
+                    print("Colidiu")
+                    imagem['game_over'].play()
+                    fim_jogo = True
+
 
 
 # rodar_jogo()
