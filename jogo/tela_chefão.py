@@ -48,7 +48,7 @@ def inicializa():
     pos_maca_especial = pygame.Rect((x, y), (30, 40))
             
     #parede    
-    parede = pygame.Rect((0,0), (TILE_FRAME, TILE_FRAME))
+    parede = pygame.Rect((0,0), (TILE_FRAME, TILE_FRAME))   
     estado['pos_parede'] = [parede]
     
     for y1 in range(0,height,TILE_FRAME):
