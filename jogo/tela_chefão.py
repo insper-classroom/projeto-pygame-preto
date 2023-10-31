@@ -73,14 +73,18 @@ def inicializa():
 
     dicionario = {}
 
+    #fontes
     dicionario['fonte'] = pygame.font.Font('fonte/perfect_dos_vga_437/Perfect DOS VGA 437 Win.ttf',20)
 
+    #posicao
     dicionario['pos_coelho'] = pos_coelho
     dicionario['pos_maca'] = pos_maca
     dicionario['pos_maca_especial'] = pos_maca_especial
 
+    #imagem da parede
     dicionario['parede'] = pygame.image.load('imagens/parede2.png')
 
+    #imagens da cobra
     dicionario['img_cobra'] = pygame.image.load('imagens/cobra_cabeca.png')
     dicionario['cobra'] = pygame.transform.scale(dicionario['img_cobra'],(50,50))
 
@@ -91,43 +95,46 @@ def inicializa():
     estado['cobra'][0]['imag'] = dicionario['cobra'] 
 
     dicionario['img_cobra_rabo'] = pygame.image.load('imagens/cobra_rabo.png')
-    dicionario['cobra_rabo'] = pygame.transform.scale(dicionario['img_cobra_rabo'],(30,60))
+    dicionario['cobra_rabo'] = pygame.transform.scale(dicionario['img_cobra_rabo'],(50,50))
     dicionario['cobra_rabo_direita'] = pygame.transform.rotate(dicionario['cobra_rabo'],90)
     dicionario['cobra_rabo_cima'] = pygame.transform.rotate(dicionario['cobra_rabo'],180)
     dicionario['cobra_rabo_esquerda'] = pygame.transform.rotate(dicionario['cobra_rabo'],270)
     dicionario['cobra_rabo_baixo'] = dicionario['cobra_rabo']
     
     dicionario['img_cobra_corpo'] = pygame.image.load('imagens/cobra_corpo.png')
-    dicionario['cobra_corpo'] = pygame.transform.scale(dicionario['img_cobra_corpo'],(35,37))
+    dicionario['cobra_corpo'] = pygame.transform.scale(dicionario['img_cobra_corpo'],(50,50))
     dicionario['cobra_corpo_direita'] = pygame.transform.rotate(dicionario['cobra_corpo'],90)
+    dicionario['cobra_corpo_cima'] = pygame.transform.rotate(dicionario['cobra_corpo'],180)
+    dicionario['cobra_corpo_esquerda'] = pygame.transform.rotate(dicionario['cobra_corpo'],270)
+    dicionario['cobra_corpo_baixo'] = dicionario['cobra_corpo']
 
     dicionario['img_cobra_mov1'] = pygame.image.load('imagens/cobra_mov1.png')
-    dicionario['cobra_mov1'] = pygame.transform.scale(dicionario['img_cobra_mov1'],(35,37))
+    dicionario['cobra_mov1'] = pygame.transform.scale(dicionario['img_cobra_mov1'],(50,50))
 
     dicionario['img_cobra_mov2'] = pygame.image.load('imagens/cobra_mov2.png')
-    dicionario['cobra_mov2'] = pygame.transform.scale(dicionario['img_cobra_mov2'],(35,37))
+    dicionario['cobra_mov2'] = pygame.transform.scale(dicionario['img_cobra_mov2'],(50,50))
 
     dicionario['img_cobra_mov3'] = pygame.image.load('imagens/cobra_mov3.png')
-    dicionario['cobra_mov3'] = pygame.transform.scale(dicionario['img_cobra_mov3'],(35,37))
+    dicionario['cobra_mov3'] = pygame.transform.scale(dicionario['img_cobra_mov3'],(50,50))
 
     dicionario['img_cobra_mov4'] = pygame.image.load('imagens/cobra_mov4.png')
-    dicionario['cobra_mov4'] = pygame.transform.scale(dicionario['img_cobra_mov4'],(35,37))
+    dicionario['cobra_mov4'] = pygame.transform.scale(dicionario['img_cobra_mov4'],(50,50))
 
+    #imagens dos coelhos
     dicionario['img_coelho'] = pygame.image.load('imagens/coelho.png')
     dicionario['coelho_bom'] = pygame.transform.scale(dicionario['img_coelho'],(40,50))
 
     dicionario['img_coelho_mal'] = pygame.image.load('imagens/coelho_malvado.png')
     dicionario['coelho_mal'] = pygame.transform.scale(dicionario['img_coelho_mal'],(40,50))
 
+    #imagens das maçãs
     dicionario['img_maca'] = pygame.image.load('imagens/maca.png')
     dicionario['maca'] = pygame.transform.scale(dicionario['img_maca'],(30,40))
 
     dicionario['img_maca_especial'] = pygame.image.load('imagens/maca_especial.png')
     dicionario['maca_especial'] = pygame.transform.scale(dicionario['img_maca_especial'],(30,40))
 
-    dicionario['img_cobra_corpo'] = pygame.image.load('imagens/cobra_corpo.png')
-    dicionario['cobra_corpo'] = pygame.transform.scale(dicionario['img_cobra_corpo'],(30,60))
-
+    #sons
     dicionario['int'] = 'sons/8bit-music-for-game-68698.mp3'
     pygame.mixer.music.load(dicionario['int'])
     pygame.mixer.music.play()
@@ -189,14 +196,27 @@ def recebe_eventos(estado,dicionario,window):
         if estado['direcao'] == 'cima':
             if cabeca['pos'][1] < pescoco['pos'][1] and pescoco['pos'][1] < corpo1['pos'][1]: #cenario 2
                 pescoco['imag']= dicionario['cobra_corpo']
+            if cabeca['pos'][1] < pescoco['pos'][1] and pescoco['pos'][0] > corpo1['pos'][0]: 
+                pescoco['imag']= dicionario['cobra_mov4']
+            if cabeca['pos'][1] < pescoco['pos'][1] and pescoco['pos'][0] < corpo1['pos'][0]: 
+                pescoco['imag']= dicionario['cobra_mov3']
 
         if estado['direcao'] == 'esquerda':
-            if cabeca['pos'][1] > pescoco['pos'][1] and pescoco['pos'][1] > corpo1['pos'][1]:
-                pescoco['imag']= dicionario['cobra_corpo']
+            if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][0] < corpo1['pos'][0]:
+                pescoco['imag']= dicionario['cobra_corpo_esquerda']
+            if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][1] > corpo1['pos'][1]: # cenario 3
+                pescoco['imag']= dicionario['cobra_mov1']
+            if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][1] < corpo1['pos'][1]: # cenario 4
+                pescoco['imag']= dicionario['cobra_mov2']
 
         if estado['direcao'] == 'direita':
-            if cabeca['pos'][1] < pescoco['pos'][1] and pescoco['pos'][1] < corpo1['pos'][1]:
-                pescoco['imag']= dicionario['cobra_corpo']
+            if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][0] > corpo1['pos'][0]:
+                pescoco['imag']= dicionario['cobra_corpo_direita']
+            if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][1] < corpo1['pos'][1]: 
+                pescoco['imag']= dicionario['cobra_mov4']
+            if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][1] > corpo1['pos'][1]: 
+                pescoco['imag']= dicionario['cobra_mov3']
+            
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -255,7 +275,6 @@ def recebe_eventos(estado,dicionario,window):
         estado['cobra'].insert(0,nova_cabeca)
 
         estado['cobra'][1]['imag'] = dicionario['cobra_corpo']
-        print(estado['cobra'])
 
         dicionario['comida'].play()
         estado["pontuacao"] += 1
