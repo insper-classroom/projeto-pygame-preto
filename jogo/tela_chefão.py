@@ -12,15 +12,22 @@ def inicializa():
     QUANT_COELHOS = 3
 
     window = pygame.display.set_mode((widht,height))
-    pygame.display.set_caption('JOGO DA COBRINHA')
+    pygame.display.set_caption('RETRO SNAKE')
 
     estado = {
         'pos_cobra': [(widht/2),(height/2)],
         'pos_rabo' : [(widht/2) + 12,(height/2) - 59],
         'velocidade' : [0, VELOCIDADE_Y],
         'pontuacao' : 0,
-        'xp' : 0
-        }
+        'xp' : 0,
+        'direcao': 'baixo',
+        'corpo': 1,
+        'cobra' : [{
+            'pos' : [(widht/2),(height/2)],
+            'imag' : '',
+            'cabeca': True,
+        }]
+    }
     #posicao aleatoria do coelho
     pos_coelho = []
     for _ in range(QUANT_COELHOS):
@@ -73,8 +80,18 @@ def inicializa():
     dicionario['img_cobra'] = pygame.image.load('imagens/cobra_cabeca.png')
     dicionario['cobra'] = pygame.transform.scale(dicionario['img_cobra'],(50,50))
 
+    dicionario['cobra_direita']= pygame.transform.rotate(dicionario['cobra'],90)
+    dicionario['cobra_cima']= pygame.transform.rotate(dicionario['cobra'],180)
+    dicionario['cobra_esquerda']= pygame.transform.rotate(dicionario['cobra'],270)
+    dicionario['cobra_baixo'] = dicionario['cobra']
+    estado['cobra'][0]['imag'] = dicionario['cobra'] 
+
     dicionario['img_cobra_rabo'] = pygame.image.load('imagens/cobra_rabo.png')
     dicionario['cobra_rabo'] = pygame.transform.scale(dicionario['img_cobra_rabo'],(30,60))
+    
+    dicionario['img_cobra_corpo'] = pygame.image.load('imagens/cobra_corpo.png')
+    dicionario['cobra_corpo'] = pygame.transform.scale(dicionario['img_cobra_corpo'],(35,37))
+    dicionario['cobra_corpo_direita'] = pygame.transform.rotate(dicionario['cobra_corpo'],90)
 
     dicionario['img_coelho'] = pygame.image.load('imagens/coelho.png')
     dicionario['coelho_bom'] = pygame.transform.scale(dicionario['img_coelho'],(40,50))
@@ -103,11 +120,26 @@ def inicializa():
 
 def recebe_eventos(estado,dicionario,window):
     # movimentação da cobra
-    estado['pos_cobra'][0] += estado['velocidade'][0]
-    estado['pos_cobra'][1] += estado['velocidade'][1]
-    estado['pos_rabo'][0] += estado['velocidade'][0]
-    estado['pos_rabo'][1] += estado['velocidade'][1]
+    # estado['pos_cobra'][0] += estado['velocidade'][0]
+    # estado['pos_cobra'][1] += estado['velocidade'][1]
+    # estado['pos_rabo'][0] += estado['velocidade'][0]
+    # estado['pos_rabo'][1] += estado['velocidade'][1]
     
+    y = estado['cobra'][0]['pos'][1] 
+    x = estado['cobra'][0]['pos'][0] 
+
+    y += estado['velocidade'][1]
+    x += estado['velocidade'][0]
+
+    pedaco ={
+        'pos' : [x,y],
+        'imag' : dicionario['cobra'],
+    }
+    
+
+    estado['cobra'].insert(0,pedaco)
+    del estado['cobra'][-1]
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
@@ -116,21 +148,26 @@ def recebe_eventos(estado,dicionario,window):
             if event.key == pygame.K_RIGHT:
                 estado['velocidade'][0] = VELOCIDADE_X
                 estado['velocidade'][1] = 0
+                dicionario['cobra'] = dicionario['cobra_direita']
+                estado['direcao'] = 'direita'
 
             elif event.key == pygame.K_LEFT:
                 estado['velocidade'][0] = -VELOCIDADE_X
                 estado['velocidade'][1] = 0
+                dicionario['cobra'] = dicionario['cobra_esquerda']
                 
             elif event.key == pygame.K_DOWN:
                 estado['velocidade'][0] = 0
                 estado['velocidade'][1] = VELOCIDADE_Y
+                dicionario['cobra'] = dicionario['cobra_baixo']
             
             elif event.key == pygame.K_UP:
                 estado['velocidade'][0] = 0
                 estado['velocidade'][1] = - VELOCIDADE_Y
-    
+                dicionario['cobra'] = dicionario['cobra_cima']
+
     #colisão da cobra c/ parede
-    retan_cobra = pygame.Rect((estado['pos_cobra'][0],estado['pos_cobra'][1]),(TILE_FRAME,TILE_FRAME))  
+    retan_cobra = pygame.Rect((estado['cobra'][0]['pos'][0],estado['cobra'][0]['pos'][1]),(TILE_FRAME,TILE_FRAME))  
     for parede in estado['pos_parede']:
         if retan_cobra.colliderect(parede):
             print("Colidiu")
@@ -141,6 +178,20 @@ def recebe_eventos(estado,dicionario,window):
     retan_maca = pygame.Rect((dicionario['pos_maca'][0], dicionario['pos_maca'][1]),(30,40))
 
     if retan_cobra.colliderect(retan_maca):
+        y = estado['cobra'][0]['pos'][1] 
+        x = estado['cobra'][0]['pos'][0] 
+
+        pedaco ={
+            'pos' : [x,y],
+            'imag' : dicionario['cobra_corpo']
+        }
+
+
+        estado['cobra'].insert(0,pedaco)
+
+        estado['cobra'][1]['imag'] = dicionario['cobra_corpo']
+        print(estado['cobra'])
+
         dicionario['comida'].play()
         estado["pontuacao"] += 1
         x = randint(100,1100)
@@ -167,11 +218,22 @@ def recebe_eventos(estado,dicionario,window):
 
     return True
 
+
 def desenha(window,dicionario,estado):
     window.fill((0,149,0))
 
-    window.blit(dicionario['cobra'],(estado['pos_cobra'][0],estado['pos_cobra'][1]))
-    window.blit(dicionario['cobra_rabo'],(estado['pos_rabo'][0],estado['pos_rabo'][1]))
+    # window.blit(dicionario['cobra'],(estado['pos_cobra'][0],estado['pos_cobra'][1]))
+    # window.blit(dicionario['cobra_rabo'],(estado['pos_rabo'][0],estado['pos_rabo'][1]))
+
+    for i in range(estado['corpo']):
+        if estado['direcao'] == 'direita':
+            x = estado['cobra'][0]["pos"][0] - 35
+            y = estado['cobra'][0]["pos"][1]
+
+            window.blit(dicionario['cobra_corpo_direita'],(x,y))
+
+    for cobra in estado['cobra']:
+        window.blit(cobra['imag'],(cobra['pos'][0], cobra['pos'][1]))
 
     for parede in estado['pos_parede']:
         window.blit(dicionario['parede'],parede)
