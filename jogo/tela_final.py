@@ -6,7 +6,7 @@ def inicializa():
 
     pygame.init()
     window = pygame.display.set_mode((widht,height))
-    pygame.display.set_caption('JOGO DA COBRINHA')
+    pygame.display.set_caption('RETRO SNAKE')
 
     dicionario = {}
     dicionario['game over'] = pygame.image.load('imagens/game over.png')
@@ -15,6 +15,10 @@ def inicializa():
     dicionario['cobra_morta'] = pygame.transform.scale(dicionario['img_cobra_morta'],(300,300))
 
     dicionario['fonte'] = pygame.font.Font('fonte/perfect_dos_vga_437/Perfect DOS VGA 437 Win.ttf',25)
+
+    dicionario['som_game_over'] = 'sons/game-over-arcade-6435.mp3'
+    pygame.mixer.music.load(dicionario['som_game_over'])
+    pygame.mixer.music.play()
 
     return window,dicionario
 
@@ -40,5 +44,5 @@ def game_loop(window,dicionario):
     while recebe_eventos():
         desenha(window,dicionario)
     
-w,d = inicializa()
-game_loop(w,d)
+# w,d = inicializa()
+# game_loop(w,d)
