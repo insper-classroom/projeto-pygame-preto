@@ -205,17 +205,17 @@ def recebe_eventos(estado,dicionario,window):
             if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][0] < corpo1['pos'][0]:
                 pescoco['imag']= dicionario['cobra_corpo_esquerda']
             if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][1] > corpo1['pos'][1]: # cenario 3
-                pescoco['imag']= dicionario['cobra_mov1']
+                pescoco['imag']= dicionario['cobra_mov4']
             if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][1] < corpo1['pos'][1]: # cenario 4
-                pescoco['imag']= dicionario['cobra_mov2']
+                pescoco['imag']= dicionario['cobra_mov1']
 
         if estado['direcao'] == 'direita':
             if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][0] > corpo1['pos'][0]:
                 pescoco['imag']= dicionario['cobra_corpo_direita']
             if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][1] < corpo1['pos'][1]: 
-                pescoco['imag']= dicionario['cobra_mov4']
+                pescoco['imag']= dicionario['cobra_mov1']
             if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][1] > corpo1['pos'][1]: 
-                pescoco['imag']= dicionario['cobra_mov3']
+                pescoco['imag']= dicionario['cobra_mov4']
             
 
     for event in pygame.event.get():
