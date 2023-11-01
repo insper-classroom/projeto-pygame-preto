@@ -99,7 +99,9 @@ imagem['parede'] = pygame.image.load('imagens/parede2.png')
 imagem['comida'] = pygame.image.load('imagens/maca.png')
 imagem['coelho'] = pygame.image.load('imagens/coelho.png')
 
-
+#imagens das maçãs
+imagem['img_maca'] = pygame.image.load('imagens/maca.png')
+imagem['maca'] = pygame.transform.scale(imagem['img_maca'],(30,40))
 
 
 imagem['game_over'] = pygame.mixer.Sound('sons/game-over-arcade-6435.mp3')
@@ -144,8 +146,8 @@ def gerar_parede(dicionario):
     return dicionario
 
 def desenhar_comida(window, tamanho, dicionario_comida):
-    pygame.draw.rect(window, vermelha, pygame.Rect(dicionario_comida['comida_x'], dicionario_comida['comida_y'], tamanho, tamanho))
-
+    pygame.draw.rect(window, verde_2, pygame.Rect(dicionario_comida['comida_x'], dicionario_comida['comida_y'], tamanho, tamanho))
+    window.blit(imagem['maca'],(dicionario_comida['comida_x'], dicionario_comida['comida_y']))
 # def desenhar_pedra(window, tamanho, dicionario):
 #     pygame.draw.rect(window, preta, pygame.Rect(dicionario['pedra_x'], dicionario['pedra_y'], tamanho, tamanho))
 
