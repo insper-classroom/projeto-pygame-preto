@@ -2,8 +2,8 @@ import pygame
 import tela_final
 from random import randint
 
-VELOCIDADE_X = 50
-VELOCIDADE_Y = 50
+VELOCIDADE_X = 0
+VELOCIDADE_Y = 0
 TILE_FRAME = 50
 
 def inicializa():
