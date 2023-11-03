@@ -26,7 +26,10 @@ def inicializa():
 def recebe_eventos():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            exit()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
             return False
+        
     return True
 
 def desenha(window,dicionario):
@@ -44,3 +47,4 @@ def desenha(window,dicionario):
 def game_loop(window,dicionario):
     while recebe_eventos():
         desenha(window,dicionario)
+    print("Foi corno")

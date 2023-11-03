@@ -2,8 +2,6 @@ import pygame
 import tela_final
 from random import randint
 
-VELOCIDADE_X = 0
-VELOCIDADE_Y = 0
 TILE_FRAME = 50
 
 def inicializa():
@@ -24,13 +22,13 @@ def inicializa():
         'pontuacao' : 0,
         'xp' : 0,
         'direcao': 'baixo',
-        'corpo': 1,
         'cobra' : [{
             'pos' : [(widht/2),(height/2)],
             'imag' : '',
             'cabeca': True,
         }],
         'clock' : clock,
+        'status': True
     }
     #posicao aleatoria do coelho
     pos_coelho = []
@@ -85,41 +83,31 @@ def inicializa():
     dicionario['parede'] = pygame.image.load('imagens/parede2.png')
 
     #imagens da cobra
-    dicionario['img_cobra'] = pygame.image.load('imagens/cobra_cabeca.png')
-    dicionario['cobra'] = pygame.transform.scale(dicionario['img_cobra'],(50,50))
+    img_cabeca = pygame.image.load('imagens/cobra_cabeca.png')
+    dicionario['img_cabeca'] = pygame.transform.scale(img_cabeca,(50,50))
 
-    dicionario['cobra_direita']= pygame.transform.rotate(dicionario['cobra'],90)
-    dicionario['cobra_cima']= pygame.transform.rotate(dicionario['cobra'],180)
-    dicionario['cobra_esquerda']= pygame.transform.rotate(dicionario['cobra'],270)
-    dicionario['cobra_baixo'] = dicionario['cobra']
-    estado['cobra'][0]['imag'] = dicionario['cobra'] 
+    dicionario['cobra_direita']= pygame.transform.rotate(dicionario['img_cabeca'],90)
+    dicionario['cobra_cima']= pygame.transform.rotate(dicionario['img_cabeca'],180)
+    dicionario['cobra_esquerda']= pygame.transform.rotate(dicionario['img_cabeca'],270)
+    dicionario['cobra_baixo'] = dicionario['img_cabeca']
+    estado['cobra'][0]['imag'] = dicionario['img_cabeca'] 
 
-    dicionario['img_cobra_rabo'] = pygame.image.load('imagens/cobra_rabo.png')
-    dicionario['cobra_rabo'] = pygame.transform.scale(dicionario['img_cobra_rabo'],(50,50))
-    dicionario['cobra_rabo_direita'] = pygame.transform.rotate(dicionario['cobra_rabo'],90)
-    dicionario['cobra_rabo_cima'] = pygame.transform.rotate(dicionario['cobra_rabo'],180)
-    dicionario['cobra_rabo_esquerda'] = pygame.transform.rotate(dicionario['cobra_rabo'],270)
-    dicionario['cobra_rabo_baixo'] = dicionario['cobra_rabo']
+    img_cobra_rabo = pygame.transform.scale(pygame.image.load('imagens/cobra_rabo.png'),(50,50))
+    dicionario['cobra_rabo_direita'] = pygame.transform.rotate(img_cobra_rabo,90)
+    dicionario['cobra_rabo_cima'] = pygame.transform.rotate(img_cobra_rabo,180)
+    dicionario['cobra_rabo_esquerda'] = pygame.transform.rotate(img_cobra_rabo,270)
+    dicionario['cobra_rabo_baixo'] = img_cobra_rabo
     
     dicionario['img_cobra_corpo'] = pygame.image.load('imagens/cobra_corpo.png')
     dicionario['cobra_corpo'] = pygame.transform.scale(dicionario['img_cobra_corpo'],(50,50))
-    dicionario['cobra_corpo_direita'] = pygame.transform.rotate(dicionario['cobra_corpo'],90)
-    dicionario['cobra_corpo_cima'] = pygame.transform.rotate(dicionario['cobra_corpo'],180)
-    dicionario['cobra_corpo_esquerda'] = pygame.transform.rotate(dicionario['cobra_corpo'],270)
-    dicionario['cobra_corpo_baixo'] = dicionario['cobra_corpo']
+    dicionario['cobra_corpo_horizontal'] = pygame.transform.rotate(dicionario['cobra_corpo'],90)
+    dicionario['cobra_corpo_vertical'] = dicionario['cobra_corpo']
 
-    dicionario['img_cobra_mov1'] = pygame.image.load('imagens/cobra_mov1.png')
-    dicionario['cobra_mov1'] = pygame.transform.scale(dicionario['img_cobra_mov1'],(50,50))
-
-    dicionario['img_cobra_mov2'] = pygame.image.load('imagens/cobra_mov2.png')
-    dicionario['cobra_mov2'] = pygame.transform.scale(dicionario['img_cobra_mov2'],(50,50))
-
-    dicionario['img_cobra_mov3'] = pygame.image.load('imagens/cobra_mov3.png')
-    dicionario['cobra_mov3'] = pygame.transform.scale(dicionario['img_cobra_mov3'],(50,50))
-
-    dicionario['img_cobra_mov4'] = pygame.image.load('imagens/cobra_mov4.png')
-    dicionario['cobra_mov4'] = pygame.transform.scale(dicionario['img_cobra_mov4'],(50,50))
-
+    img_cobra_quina = pygame.transform.scale(pygame.image.load('imagens/cobra_mov1.png'), (50,50))
+    dicionario['cobra_quina_direita_baixo'] = img_cobra_quina
+    dicionario['cobra_quina_esquerda_baixo'] = pygame.transform.rotate(img_cobra_quina, -90)
+    dicionario['cobra_quina_esquerda_cima'] = pygame.transform.rotate(img_cobra_quina, -180)
+    dicionario['cobra_quina_direita_cima'] = pygame.transform.rotate(img_cobra_quina, -270)
     #imagens dos coelhos
     dicionario['img_coelho'] = pygame.image.load('imagens/coelho.png')
     dicionario['coelho_bom'] = pygame.transform.scale(dicionario['img_coelho'],(40,50))
@@ -145,11 +133,7 @@ def inicializa():
 
     return window,dicionario,estado 
 
-def recebe_eventos(estado,dicionario,window):
-    # movimentação da cobra
-    y = estado['cobra'][0]['pos'][1] 
-    x = estado['cobra'][0]['pos'][0] 
-
+def movimenta(estado, x, y):
     if estado['direcao'] == 'baixo':
         y += estado['velocidade'][1]
     if estado['direcao'] == 'cima':
@@ -158,18 +142,47 @@ def recebe_eventos(estado,dicionario,window):
         x += estado['velocidade'][0]
     if estado['direcao'] == 'esquerda':
         x -= estado['velocidade'][0]
+    
+    return estado, x, y
 
-    pedaco ={
+def muda_movimento(estado, dicionario):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return False
+        
+        if event.type == pygame.KEYDOWN :
+            if event.key == pygame.K_RIGHT:
+                if estado['direcao'] != 'esquerda': 
+                    dicionario['img_cabeca'] = dicionario['cobra_direita']
+                    estado['direcao'] = 'direita'
+
+            elif event.key == pygame.K_LEFT:
+                if estado['direcao'] != 'direita':
+                    dicionario['img_cabeca'] = dicionario['cobra_esquerda']
+                    estado['direcao'] = 'esquerda'
+                
+            elif event.key == pygame.K_DOWN:
+                if estado['direcao'] != 'cima':
+                    dicionario['img_cabeca'] = dicionario['cobra_baixo']
+                    estado['direcao'] = 'baixo'
+            
+            elif event.key == pygame.K_UP:
+                if estado['direcao'] != 'baixo':
+                    dicionario['img_cabeca'] = dicionario['cobra_cima']
+                    estado['direcao'] = 'cima'
+    return estado, dicionario
+
+def atualiza_cobra(estado, dicionario, x, y):
+    pedaco = {
         'pos' : [x,y],
-        'imag' : dicionario['cobra'],
+        'imag' : dicionario['img_cabeca'],
     }
     
-
-    estado['cobra'].insert(0,pedaco)
+    estado['cobra'].insert(0, pedaco)
     del estado['cobra'][-1]
 
     if len(estado['cobra']) == 2:
-        rabo = estado['cobra'][1]
+        rabo = estado['cobra'][-1]
         if estado['direcao'] == 'baixo':
             rabo['imag'] = dicionario['cobra_rabo_baixo']
         if estado['direcao'] == 'cima':
@@ -183,93 +196,70 @@ def recebe_eventos(estado,dicionario,window):
         cabeca = estado['cobra'][0]
         pescoco = estado['cobra'][1]
         pescoco['imag']= dicionario['cobra_corpo']
+        rabo = estado['cobra'][-1]
         corpo1 = estado['cobra'][2]
-
+                    
         if estado['direcao'] == 'baixo':
-            if cabeca['pos'][1] > pescoco['pos'][1] and pescoco['pos'][1] > corpo1['pos'][1]: #cenario 1
-                pescoco['imag']= dicionario['cobra_corpo']
-            if cabeca['pos'][1] > pescoco['pos'][1] and pescoco['pos'][0] < corpo1['pos'][0]: # cenario 3
-                pescoco['imag']= dicionario['cobra_mov1']
-            if cabeca['pos'][1] > pescoco['pos'][1] and pescoco['pos'][0] > corpo1['pos'][0]: # cenario 4
-                pescoco['imag']= dicionario['cobra_mov2']
+            # acompanha onde tá indo
+            rabo['imag'] = dicionario['cobra_rabo_baixo']
+            if cabeca['pos'][1] > pescoco['pos'][1] and pescoco['pos'][1] > corpo1['pos'][1]:
+                pescoco['imag']= dicionario['cobra_corpo_vertical']
+            # estava vindo da direita
+            if cabeca['pos'][1] > pescoco['pos'][1] and pescoco['pos'][0] < corpo1['pos'][0]:
+                pescoco['imag']= dicionario['cobra_quina_direita_baixo']
+            # estava vindo da esquerda
+            if cabeca['pos'][1] > pescoco['pos'][1] and pescoco['pos'][0] > corpo1['pos'][0]: 
+                pescoco['imag']= dicionario['cobra_quina_esquerda_baixo']
 
         if estado['direcao'] == 'cima':
+            # acompanha onde tá indo
+            rabo['imag'] = dicionario['cobra_rabo_cima']
             if cabeca['pos'][1] < pescoco['pos'][1] and pescoco['pos'][1] < corpo1['pos'][1]: #cenario 2
-                pescoco['imag']= dicionario['cobra_corpo']
+                pescoco['imag']= dicionario['cobra_corpo_vertical']
+            # 
             if cabeca['pos'][1] < pescoco['pos'][1] and pescoco['pos'][0] > corpo1['pos'][0]: 
-                pescoco['imag']= dicionario['cobra_mov4']
+                pescoco['imag']= dicionario['cobra_quina_esquerda_cima']
             if cabeca['pos'][1] < pescoco['pos'][1] and pescoco['pos'][0] < corpo1['pos'][0]: 
-                pescoco['imag']= dicionario['cobra_mov3']
+                pescoco['imag']= dicionario['cobra_quina_direita_cima']
 
         if estado['direcao'] == 'esquerda':
+            rabo['imag'] = dicionario['cobra_rabo_esquerda']
+            
             if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][0] < corpo1['pos'][0]:
-                pescoco['imag']= dicionario['cobra_corpo_esquerda']
+                pescoco['imag'] = dicionario['cobra_corpo_horizontal']
             if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][1] > corpo1['pos'][1]: # cenario 3
-                pescoco['imag']= dicionario['cobra_mov4']
+                pescoco['imag'] = dicionario['cobra_quina_esquerda_cima']
             if cabeca['pos'][0] < pescoco['pos'][0] and pescoco['pos'][1] < corpo1['pos'][1]: # cenario 4
-                pescoco['imag']= dicionario['cobra_mov1']
+                pescoco['imag'] = dicionario['cobra_quina_esquerda_baixo']
 
         if estado['direcao'] == 'direita':
+            rabo['imag'] = dicionario['cobra_rabo_direita']
+            
             if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][0] > corpo1['pos'][0]:
-                pescoco['imag']= dicionario['cobra_corpo_direita']
+                pescoco['imag']= dicionario['cobra_corpo_horizontal']
             if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][1] < corpo1['pos'][1]: 
-                pescoco['imag']= dicionario['cobra_mov1']
+                pescoco['imag']= dicionario['cobra_quina_direita_baixo']
             if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][1] > corpo1['pos'][1]: 
-                pescoco['imag']= dicionario['cobra_mov4']
-            
+                pescoco['imag']= dicionario['cobra_quina_direita_cima']
+    return estado, dicionario
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return False
-        
-        if event.type == pygame.KEYDOWN :
-            if event.key == pygame.K_RIGHT:
-                if estado['direcao'] != 'esquerda': 
-                    dicionario['cobra'] = dicionario['cobra_direita']
-                    estado['direcao'] = 'direita'
-
-            elif event.key == pygame.K_LEFT:
-                if estado['direcao'] != 'direita':
-                    dicionario['cobra'] = dicionario['cobra_esquerda']
-                    estado['direcao'] = 'esquerda'
-                
-            elif event.key == pygame.K_DOWN:
-                if estado['direcao'] != 'cima':
-                    dicionario['cobra'] = dicionario['cobra_baixo']
-                    estado['direcao'] = 'baixo'
-            
-            elif event.key == pygame.K_UP:
-                if estado['direcao'] != 'baixo':
-                    dicionario['cobra'] = dicionario['cobra_cima']
-                    estado['direcao'] = 'cima'
-
-    #colisão da cobra c/ parede
-    cabeca = estado['cobra'][0]
-    retan_cobra = pygame.Rect((cabeca['pos'][0],cabeca['pos'][1]),(TILE_FRAME,TILE_FRAME))  
+def colisao_parede(estado, dicionario, retan_cobra):
     for parede in estado['pos_parede']:
         if retan_cobra.colliderect(parede):
             dicionario['game_over'].play()
-            return False
-        
-    #colisao da cobra com a maçã
-    retan_maca = pygame.Rect((dicionario['pos_maca'][0], dicionario['pos_maca'][1]),(30,40))
+            estado['status'] = False
+    return estado, dicionario
 
+def colisao_maca(estado, dicionario, retan_cobra):
+    retan_maca = pygame.Rect((dicionario['pos_maca'][0], dicionario['pos_maca'][1]),(30,40))
     if retan_cobra.colliderect(retan_maca):
         y = estado['cobra'][0]['pos'][1] 
         x = estado['cobra'][0]['pos'][0] 
+        estado, x, y = movimenta(estado, x, y)  
 
-        if estado['direcao'] == 'baixo':
-            y += estado['velocidade'][1]
-        if estado['direcao'] == 'cima':
-            y-= estado['velocidade'][1]
-        if estado['direcao'] == 'direita':
-            x += estado['velocidade'][0]
-        if estado['direcao'] == 'esquerda':
-            x -= estado['velocidade'][0]
-
-        nova_cabeca={
+        nova_cabeca = {
             'pos' : [x,y],
-            'imag' : dicionario['cobra']
+            'imag' : dicionario['img_cabeca']
         }
 
         estado['cobra'].insert(0,nova_cabeca)
@@ -282,10 +272,10 @@ def recebe_eventos(estado,dicionario,window):
         y = randint(100,700)
         nova_maca = pygame.Rect((x, y), (30, 40))
         dicionario['pos_maca'] = nova_maca
-
-    #colisao da cobra com a maçã especial
+    return estado, dicionario
+        
+def colisao_maca_especial(estado, dicionario, retan_cobra):
     retan_maca_especial = pygame.Rect((dicionario['pos_maca_especial'][0], dicionario['pos_maca_especial'][1]),(30,40))
-
     if retan_cobra.colliderect(retan_maca_especial):
         dicionario['comida'].play()
         estado['xp'] += 5
@@ -293,13 +283,37 @@ def recebe_eventos(estado,dicionario,window):
         y = randint(50,100)
         nova_maca_especial = pygame.Rect((x, y), (30, 40))
         dicionario['pos_maca_especial'] = nova_maca_especial
+    return estado, dicionario
+    
+
+def recebe_eventos(estado,dicionario,window):
+    y = estado['cobra'][0]['pos'][1] 
+    x = estado['cobra'][0]['pos'][0] 
+    # movimentação da cobra
+    estado, x, y = movimenta(estado, x, y)
+
+    estado, dicionario = atualiza_cobra(estado, dicionario, x, y)
+            
+    estado, dicionario = muda_movimento(estado, dicionario)
+
+    cabeca = estado['cobra'][0]
+    retan_cobra = pygame.Rect((cabeca['pos'][0],cabeca['pos'][1]),(TILE_FRAME,TILE_FRAME))  
+
+    #colisão da cobra c/ parede
+    estado, dicionario = colisao_parede(estado, dicionario, retan_cobra)
+        
+    #colisao da cobra com a maçã
+    estado, dicionario = colisao_maca(estado, dicionario, retan_cobra)
+
+    #colisao da cobra com a maçã especial
+    estado, dicionario = colisao_maca_especial(estado, dicionario, retan_cobra)
     
     #colisao da cobra com o coelho
     # retan_coelho = pygame.Rect((dicionario['pos_coelho'][0], dicionario['pos_coelho'][1]),(40,50))
     # if retan_cobra.collidedict(retan_coelho):
     #         dicionario['coelho_bom'] = dicionario['coelho_mal']
 
-    return True
+    return estado['status']
 
 def desenha(window,dicionario,estado):
     window.fill((0,149,0))
@@ -325,12 +339,19 @@ def desenha(window,dicionario,estado):
     pygame.display.update()
 
 def game_loop(window,dicionario,estado):
+    # jogo começa
     while recebe_eventos(estado,dicionario,window):
-        estado['clock'].tick(4)
+        estado['clock'].tick(5)
         desenha(window,dicionario,estado)
     
+    # jogo acaba e troca pra tela final
+    w,d = tela_final.inicializa()
+    while (tela_final.game_loop(w,d)):
+        pass
+    # jogo recomeça
+    w,d,e = inicializa()
+    game_loop(w,d,e)
+
+#inicializa o jogo
 w,d,e = inicializa()
 game_loop(w,d,e)
-
-w,d = tela_final.inicializa()
-fecha_jogo = tela_final.game_loop(w,d)
