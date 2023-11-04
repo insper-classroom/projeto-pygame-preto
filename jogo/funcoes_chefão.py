@@ -8,7 +8,6 @@ def game_over(estado, dicionario):
     estado['status'] = False
     return estado, dicionario
 
-
 def movimenta(estado, x, y):
     if estado['direcao'] == 'baixo':
         y += estado['velocidade'][1]
@@ -173,13 +172,6 @@ def colisao_maca_especial(estado, dicionario, retan_cobra):
         dicionario['pos_maca_especial'] = nova_maca_especial
     return estado, dicionario
 
-# def colisao_parede(estado, dicionario, retan_cobra):
-#     for parede in estado['pos_parede']:
-#         if retan_cobra.colliderect(parede):
-#             estado, dicionario = game_over(estado, dicionario)
-#             dicionario['morte'] = "ter batido na parede"
-#     return estado, dicionario
-
 def colisao_coelho_parede(estado, coelho):
     for parede in estado['pos_parede']:
         if coelho['pos'].colliderect(parede):
@@ -203,7 +195,6 @@ def movimenta_coelho(estado, dicionario):
             x += randint(-50, 50)
             y += randint(-50, 50)
             coelho['pos'] = pygame.Rect((x, y), (40, 50))
-        # se bate na parede de cima
     return estado, dicionario
 
 def colisao_coelho(estado, dicionario,retan_cobra):
