@@ -139,16 +139,19 @@ def inicializa():
     return window,dicionario,estado 
 
 def recebe_eventos(estado,dicionario,window):
+    estado, dicionario = jogo.muda_movimento(estado, dicionario)
     y = estado['cobra'][0]['pos'][1] 
     x = estado['cobra'][0]['pos'][0] 
     # movimentação da cobra
+
+    
     estado, x, y = jogo.movimenta(estado, x, y)
     
     estado,dicionario = jogo.movimenta_coelho(estado,dicionario)
 
     estado, dicionario = jogo.atualiza_cobra(estado, dicionario, x, y)
             
-    estado, dicionario = jogo.muda_movimento(estado, dicionario)
+
 
     cabeca = estado['cobra'][0]
     retan_cobra = pygame.Rect((cabeca['pos'][0],cabeca['pos'][1]),(TILE_FRAME,TILE_FRAME))  
@@ -209,5 +212,5 @@ def game_loop(window,dicionario,estado):
     game_loop(w,d,e)
 
 #inicializa o jogo
-w,d,e = inicializa()
-game_loop(w,d,e)
+# w,d,e = inicializa()
+# game_loop(w,d,e)

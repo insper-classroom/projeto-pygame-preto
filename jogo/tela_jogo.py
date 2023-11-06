@@ -320,6 +320,7 @@ import pygame
 import tela_final
 from random import randint
 import funcoes_chefão as jogo
+import tela_chefão
 
 TILE_FRAME = 50
 
@@ -457,6 +458,8 @@ def inicializa():
     return window,dicionario,estado 
 
 def recebe_eventos(estado,dicionario,window):
+    estado, dicionario = jogo.muda_movimento(estado, dicionario)
+
     y = estado['cobra'][0]['pos'][1] 
     x = estado['cobra'][0]['pos'][0] 
     # movimentação da cobra
@@ -466,7 +469,6 @@ def recebe_eventos(estado,dicionario,window):
 
     estado, dicionario = jogo.atualiza_cobra(estado, dicionario, x, y)
             
-    estado, dicionario = jogo.muda_movimento(estado, dicionario)
 
     cabeca = estado['cobra'][0]
     retan_cobra = pygame.Rect((cabeca['pos'][0],cabeca['pos'][1]),(TILE_FRAME,TILE_FRAME))  
@@ -515,7 +517,12 @@ def game_loop(window,dicionario,estado):
     # jogo começa
     while recebe_eventos(estado,dicionario,window):
         estado['clock'].tick(4)
-        desenha(window,dicionario,estado)
+        if estado['xp'] <= 5:
+            desenha(window,dicionario,estado)
+        else:
+            break
+    window,dicionario,estado = tela_chefão.inicializa()
+    tela_chefão.game_loop(window,dicionario,estado)
     
     # jogo acaba e troca pra tela final
     w,d = tela_final.inicializa()
