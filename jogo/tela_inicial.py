@@ -1,13 +1,11 @@
 import pygame
 import tela_jogo
 pygame.mixer.init()
-window = None
+
 vaijogo = False
 
 def inicializa():
     #janela
-    global window
-
     pygame.init()
     window = pygame.display.set_mode((1200,800))
     pygame.display.set_caption('JOGO DA COBRINHA')
@@ -67,10 +65,11 @@ def desenha(window,dicionario):
     
     pygame.display.update()
 
-def game_loop_inicial(window,dicionario,dicionario_comida):
+def game_loop_inicial(window,dicionario,estado):
     while recebe_eventos():
         if vaijogo:
-            fecha_jogo = tela_jogo.rodar_jogo(window,dicionario,dicionario_comida)#IMPORTANTE PARA TROCAR DE TELAS
+            window,dicionario,estado = tela_jogo.inicializa()
+            fecha_jogo = tela_jogo.game_loop(window,dicionario,estado)#IMPORTANTE PARA TROCAR DE TELAS
             if fecha_jogo == False:
                 return False
         else:
@@ -78,8 +77,10 @@ def game_loop_inicial(window,dicionario,dicionario_comida):
 
 
     
-w,d,dicionario_comida= inicializa()
-game_loop_inicial(w,d,dicionario_comida)
+w,d,estado= inicializa()
+game_loop_inicial(w,d,estado)
+
+
 
 
 
