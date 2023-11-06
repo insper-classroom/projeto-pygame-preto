@@ -4,7 +4,6 @@ import tela_jogo
 widht = 1200
 height = 800
 def inicializa():
-
     pygame.init()
     window = pygame.display.set_mode((widht,height))
     pygame.display.set_caption('RETRO SNAKE')
@@ -26,7 +25,10 @@ def inicializa():
 def recebe_eventos():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            exit()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
             return False
+        
     return True
 
 def desenha(window,dicionario):
@@ -36,8 +38,11 @@ def desenha(window,dicionario):
 
     window.blit(dicionario['cobra_morta'],(450,220))
 
-    texto = dicionario['fonte'].render('Pressione ENTER para recomeçar',False,(0,0,0))
+    texto = dicionario['fonte'].render('Pressione ENTER para recomeçar', False, (0,0,0))
     window.blit(texto,(390,530))
+    
+    morte = dicionario['fonte'].render(f"Você morreu por: {dicionario['morte']}", False, (0,0,0))
+    window.blit(morte, (390,555))
 
     pygame.display.update()
 
