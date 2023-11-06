@@ -52,7 +52,11 @@ img.logo {
     font-size: 20px;
     font-style: normal;
     line-height: normal;
-    
+}
+
+.h-menu li:hover {
+    background-color: #A2B38B;
+    border-radius: 10px;
 }
 
 .ocr {
@@ -86,14 +90,15 @@ img.logo {
 }
 
 .cobra_comendo{
-    width: 80vh;
+    width: 95vh;
+    flex-shrink: 0;
 }
 
 .maca {
     width: 25vh;
     margin-top: 500px; 
     margin-right: 500px;
-    position:absolute;
+    position: absolute;
 }
 
 .image1 {
