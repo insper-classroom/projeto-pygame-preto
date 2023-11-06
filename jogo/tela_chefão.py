@@ -1,7 +1,7 @@
 import pygame
 import tela_final
 from random import randint
-import funcoes_chefão as jogo
+import funcoes as jogo
 
 TILE_FRAME = 50
 
@@ -210,7 +210,3 @@ def game_loop(window,dicionario,estado):
     # jogo recomeça
     w,d,e = inicializa()
     game_loop(w,d,e)
-
-#inicializa o jogo
-# w,d,e = inicializa()
-# game_loop(w,d,e)
