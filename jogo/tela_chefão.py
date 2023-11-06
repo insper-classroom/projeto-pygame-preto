@@ -295,10 +295,9 @@ def recebe_eventos(estado,dicionario,window):
         dicionario['pos_maca_especial'] = nova_maca_especial
     
     #colisao da cobra com o coelho
-    # for coelho in dicionario['pos_coelho']:
-    #     if retan_cobra.collidedict(coelho):
-    #         print("colidiu")
-    #         return False
+    # retan_coelho = pygame.Rect((dicionario['pos_coelho'][0], dicionario['pos_coelho'][1]),(40,50))
+    # if retan_cobra.collidedict(retan_coelho):
+    #         dicionario['coelho_bom'] = dicionario['coelho_mal']
 
     return True
 

@@ -1,4 +1,5 @@
 import pygame
+import tela_jogo
 
 widht = 1200
 height = 800
@@ -43,6 +44,3 @@ def desenha(window,dicionario):
 def game_loop(window,dicionario):
     while recebe_eventos():
         desenha(window,dicionario)
-    
-# w,d = inicializa()
-# game_loop(w,d)

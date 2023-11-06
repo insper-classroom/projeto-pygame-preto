@@ -97,11 +97,45 @@ velocidade_jogo = 15
 imagem = {}
 imagem['parede'] = pygame.image.load('imagens/parede2.png')
 imagem['comida'] = pygame.image.load('imagens/maca.png')
-imagem['coelho'] = pygame.image.load('imagens/coelho.png')
 
 #imagens das maçãs
 imagem['img_maca'] = pygame.image.load('imagens/maca.png')
 imagem['maca'] = pygame.transform.scale(imagem['img_maca'],(30,40))
+
+#IMAGNES DA COBRA
+imagem['img_cobra'] = pygame.image.load('imagens/cobra_cabeca.png')
+imagem['cobra'] = pygame.transform.scale(imagem['img_cobra'],(50,50))
+
+imagem['cobra_direita']= pygame.transform.rotate(imagem['cobra'],90)
+imagem['cobra_cima']= pygame.transform.rotate(imagem['cobra'],180)
+imagem['cobra_esquerda']= pygame.transform.rotate(imagem['cobra'],270)
+imagem['cobra_baixo'] = imagem['cobra'] 
+
+imagem['img_cobra_rabo'] = pygame.image.load('imagens/cobra_rabo.png')
+imagem['cobra_rabo'] = pygame.transform.scale(imagem['img_cobra_rabo'],(50,50))
+imagem['cobra_rabo_direita'] = pygame.transform.rotate(imagem['cobra_rabo'],90)
+imagem['cobra_rabo_cima'] = pygame.transform.rotate(imagem['cobra_rabo'],180)
+imagem['cobra_rabo_esquerda'] = pygame.transform.rotate(imagem['cobra_rabo'],270)
+imagem['cobra_rabo_baixo'] = imagem['cobra_rabo']
+    
+imagem['img_cobra_corpo'] = pygame.image.load('imagens/cobra_corpo.png')
+imagem['cobra_corpo'] = pygame.transform.scale(imagem['img_cobra_corpo'],(50,50))
+imagem['cobra_corpo_direita'] = pygame.transform.rotate(imagem['cobra_corpo'],90)
+imagem['cobra_corpo_cima'] = pygame.transform.rotate(imagem['cobra_corpo'],180)
+imagem['cobra_corpo_esquerda'] = pygame.transform.rotate(imagem['cobra_corpo'],270)
+imagem['cobra_corpo_baixo'] = imagem['cobra_corpo']
+
+imagem['img_cobra_mov1'] = pygame.image.load('imagens/cobra_mov1.png')
+imagem['cobra_mov1'] = pygame.transform.scale(imagem['img_cobra_mov1'],(50,50))
+
+imagem['img_cobra_mov2'] = pygame.image.load('imagens/cobra_mov2.png')
+imagem['cobra_mov2'] = pygame.transform.scale(imagem['img_cobra_mov2'],(50,50))
+
+imagem['img_cobra_mov3'] = pygame.image.load('imagens/cobra_mov3.png')
+imagem['cobra_mov3'] = pygame.transform.scale(imagem['img_cobra_mov3'],(50,50))
+
+imagem['img_cobra_mov4'] = pygame.image.load('imagens/cobra_mov4.png')
+imagem['cobra_mov4'] = pygame.transform.scale(imagem['img_cobra_mov4'],(50,50))
 
 
 imagem['game_over'] = pygame.mixer.Sound('sons/game-over-arcade-6435.mp3')
@@ -208,7 +242,7 @@ def rodar_jogo(window, dicionario, dicionario_comida):
     comida = gerar_comida(dicionario_comida)
     # pedra = gerar_pedra(dicionario)
     dicionario = gerar_parede(dicionario)
-    print(dicionario)
+    
 
     while not fim_jogo:
         window.fill(verde_2)
@@ -229,8 +263,6 @@ def rodar_jogo(window, dicionario, dicionario_comida):
         desenhar_comida(window,tamanho_quadrado,comida)
         # desenhar pedra
         # desenhar_pedra(window,tamanho_quadrado,pedra)
-        #desenhar parede
-        desenhar_parede(window,dicionario)
 
         # atualizar a posicao da cobra
         if x < 0 or x >= 1200 or y < 0 or y >= 800:
@@ -251,6 +283,8 @@ def rodar_jogo(window, dicionario, dicionario_comida):
                 fim_jogo = True
 
         desenhar_cobra(window, tamanho_quadrado, pixels)
+        #desenhar parede
+        desenhar_parede(window,dicionario)
 
         # desenhar_pontos
         desenhar_pontuacao(window,tamanho_cobra - 1)
@@ -271,7 +305,6 @@ def rodar_jogo(window, dicionario, dicionario_comida):
             retan_cobra = pygame.Rect(pixel[0], pixel[1], tamanho_quadrado, tamanho_quadrado)  
             for parede in dicionario['pos_parede']:
                 if retan_cobra.colliderect(parede):
-                    print("Colidiu")
                     imagem['game_over'].play()
                     fim_jogo = True
 
