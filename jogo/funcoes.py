@@ -182,8 +182,10 @@ def colisao_maca(estado, dicionario, retan_cobra):
         }
 
         estado['cobra'].insert(0,nova_cabeca)
-
-        estado['cobra'][1]['imag'] = dicionario['cobra_corpo']
+        pescoco = estado['cobra'][1]
+        pescoco['imag'] = dicionario['cobra_corpo']
+        if nova_cabeca['pos'][1] == pescoco['pos'][1]:
+           pescoco['imag'] = dicionario['cobra_corpo_horizontal']
 
         dicionario['comida'].play()
         estado["pontuacao"] += 1
