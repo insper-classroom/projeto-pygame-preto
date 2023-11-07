@@ -85,8 +85,6 @@ def game_loop_inicial(window,dicionario,estado):
                 return False
         else:
             desenha(window,dicionario)
-
-
     
 w,d,estado= inicializa()
 game_loop_inicial(w,d,estado)

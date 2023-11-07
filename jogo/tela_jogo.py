@@ -1,8 +1,8 @@
 import pygame
 import tela_final
+import tela_chefão
 from random import randint
 import funcoes as jogo
-import tela_chefão
 
 TILE_FRAME = 50
 
@@ -30,7 +30,6 @@ def inicializa():
         'clock' : clock,
         'status': True
     }
-
 
     #posicao aleatoria da maçã
     x = randint(100,1100)
@@ -125,6 +124,7 @@ def recebe_eventos(estado,dicionario,window):
 
     y = estado['cobra'][0]['pos'][1] 
     x = estado['cobra'][0]['pos'][0] 
+    
     # movimentação da cobra
     estado, x, y = jogo.movimenta(estado, x, y)
     
@@ -146,7 +146,6 @@ def recebe_eventos(estado,dicionario,window):
     #colisao da cobra com a maçã especial
     estado, dicionario = jogo.colisao_maca_especial(estado, dicionario, retan_cobra)
     
-
     return estado['status']
 
 def desenha(window,dicionario,estado):
@@ -174,18 +173,19 @@ def game_loop(window,dicionario,estado):
     # jogo começa
     while recebe_eventos(estado,dicionario,window):
         estado['clock'].tick(4)
-        if estado['xp'] <= 5:
-            desenha(window,dicionario,estado)
-        else:
-            break
-    window,dicionario,estado = tela_chefão.inicializa()
-    tela_chefão.game_loop(window,dicionario,estado)
-    
+        desenha(window,dicionario,estado)
+        if estado['xp'] >= 20:
+            window,dicionario,estado = tela_chefão.inicializa()
+            tela_chefão.game_loop(window,dicionario,estado)
+            
+            w,d,e = inicializa()
+            game_loop(w,d,e)
+
     # jogo acaba e troca pra tela final
     w,d = tela_final.inicializa()
     d['morte'] = dicionario['morte']
-    while (tela_final.game_loop(w,d)):
-        pass
+    (tela_final.game_loop(w,d))
+
     # jogo recomeça
     w,d,e = inicializa()
     game_loop(w,d,e)

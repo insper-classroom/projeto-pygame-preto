@@ -1,5 +1,4 @@
 import pygame
-import tela_jogo
 
 widht = 1200
 height = 800
