@@ -20,7 +20,15 @@
     
     <div id="Sobre" class="sessao grid-cols-2" id="sobre">
         <div class="image1">
-            <ul class="slider">
+
+            <i class="fa-solid fa-arrow-right seta-direita" onclick="muda_slide(1)"></i>
+            <i class="fa-solid fa-arrow-left seta-esquerda" onclick="muda_slide(2)"></i>
+            <img selected="true" style="display: block;" class='quadro' src='./imagens/imagem1.png' />
+            <img selected="false" style="display: none;" class='quadro' src='./imagens/imagem2.png' />
+            <img selected="false" style="display: none;" class='quadro' src='./imagens/imagem3.png' />
+            <img selected="false" style="display: none;" class='quadro' src='./imagens/imagem4.png' />
+
+            <!-- <ul class="slider">
                 <li>
                     <input type="radio" id="slide1" name="slide" checked>
                     <label for="slide1"></label>
@@ -46,7 +54,7 @@
                     <label for="slide4"></label>
                     <img class="quadro" src="./imagens/imagem4.png"/>
                 </li>
-            </ul>
+            </ul> -->
         </div>
         <div class="text-green">
             <p class="ocr">Retro snake é um jogo desenvolvido pelos alunos Ana Beatriz e Artur Rizzi que tem a intenção de retomar uma nostalgia do famoso jogo da cobrinha que tinha no celular da Nokia nos anos 2000. Nós aceitamos o desafio de desenvolver esse jogo porém, com novas funções agora a cobra pode enfrentar um chefão! 
@@ -72,4 +80,33 @@
     </div>
 
 </body> 
+<script>
+    function muda_slide(aumentar) {
+    var lista_quadro = document.querySelectorAll('.quadro');
+
+    for (var i = 0; i < lista_quadro.length; i++) {
+        var img = lista_quadro[i];
+
+        if (img.getAttribute("selected") === 'true') {
+        img.setAttribute("selected", "false");
+        img.style.display = "none";
+
+        var novoIndice;
+
+        if (aumentar === 1) {
+            novoIndice = (i + 1) % lista_quadro.length;
+        } else {
+            novoIndice = (i - 1 + lista_quadro.length) % lista_quadro.length;
+        }
+
+        var elemento = lista_quadro[novoIndice];
+        elemento.setAttribute("selected", "true");
+        elemento.style.display = "block";
+
+        break;
+        }
+    }
+}
+</script>
+<script src="https://kit.fontawesome.com/a9d816e57f.js" crossorigin="anonymous"></script>
 </html>
