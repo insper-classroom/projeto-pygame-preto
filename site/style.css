@@ -99,6 +99,9 @@ img.logo {
 .image1 {
     width: 628px;
     height: 376px;
+    position: relative;
+    left: 10%;
+    top: 10%;
 }
 
 .sessao {
@@ -109,11 +112,80 @@ img.logo {
 .quadro {
     width: 628px;
     height: 100%;
-    margin-left: 62px;
     border-radius: 5px;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
+.seta-direita{
+    display: pointer;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translate(-100%,-50%);
+}
+
+.seta-esquerda{
+    display: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translate(0,-50%);
+}
+.slider{
+    display: block;
+    width: 628px;
+    height: 376px;
+    margin: auto;
+    margin-top: 20px;
+    position: relative;
+}
+.slider li{
+    list-style: none;
+    position: absolute;
+}
+.slider img{
+    margin:auto;
+    height: 100%;
+    width: 100%;
+    vertical-align: top;
+}
+.slider input{
+    display: none;
+}
+.slider label{
+    background-color:#2c372e;
+    bottom: 10px;
+    cursor: pointer;
+    display: block;
+    height: 10px;
+    position: absolute;
+    width: 10px;
+    z-index: 10;
+    border-radius: 5px;
+}
+.slider li:nth-child(1) label{
+    left: 10px;
+}
+.slider li:nth-child(2) label{
+    left: 40px;
+}
+.slider li:nth-child(3) label{
+    left: 70px;
+}
+.slider li:nth-child(4) label{
+    left: 100px;
+}
+.slider li:nth-child(4) label{
+    left: 130px;
+}
+.slider img{
+    opacity: 0;
+    visibility: hidden;
+}
+.slider li input:checked ~ img{
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+}
 .flex {
     display: flex;
 }
