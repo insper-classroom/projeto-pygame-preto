@@ -1,4 +1,5 @@
 import pygame
+import tela_jogo
 
 widht = 1200
 height = 800
@@ -17,7 +18,7 @@ def inicializa():
 
     dicionario['som_game_over'] = 'sons/game-over-arcade-6435.mp3'
     pygame.mixer.music.load(dicionario['som_game_over'])
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(-1)
 
     return window,dicionario
 

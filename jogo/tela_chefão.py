@@ -130,7 +130,7 @@ def inicializa():
     #sons
     musica = 'sons/8bit-music-for-game-68698.mp3'
     pygame.mixer.music.load(musica)
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(-1)
 
     dicionario['game_over'] = pygame.mixer.Sound('sons/game-over-arcade-6435.mp3')
 
@@ -138,17 +138,20 @@ def inicializa():
 
     return window,dicionario,estado 
 
-def recebe_eventos(estado,dicionario, window):
+def recebe_eventos(estado,dicionario,window):
     estado, dicionario = jogo.muda_movimento(estado, dicionario)
     y = estado['cobra'][0]['pos'][1] 
     x = estado['cobra'][0]['pos'][0] 
-    
     # movimentação da cobra
+
+    
     estado, x, y = jogo.movimenta(estado, x, y)
     
     estado,dicionario = jogo.movimenta_coelho(estado,dicionario)
 
     estado, dicionario = jogo.atualiza_cobra(estado, dicionario, x, y)
+            
+
 
     cabeca = estado['cobra'][0]
     retan_cobra = pygame.Rect((cabeca['pos'][0],cabeca['pos'][1]),(TILE_FRAME,TILE_FRAME))  
@@ -202,4 +205,8 @@ def game_loop(window,dicionario,estado):
     # jogo acaba e troca pra tela final
     w,d = tela_final.inicializa()
     d['morte'] = dicionario['morte']
-    tela_final.game_loop(w,d)   
+    while (tela_final.game_loop(w,d)):
+        pass
+    # jogo recomeça
+    w,d,e = inicializa()
+    game_loop(w,d,e)
