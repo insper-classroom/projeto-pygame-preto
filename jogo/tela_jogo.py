@@ -174,12 +174,11 @@ def game_loop(window,dicionario,estado):
     # jogo começa
     while recebe_eventos(estado,dicionario,window):
         estado['clock'].tick(4)
-        if estado['xp'] <= 5:
+        if estado['xp'] <= 2:
             desenha(window,dicionario,estado)
         else:
-            break
-    window,dicionario,estado = tela_chefão.inicializa()
-    tela_chefão.game_loop(window,dicionario,estado)
+            window,dicionario,estado = tela_chefão.inicializa()
+            tela_chefão.game_loop(window,dicionario,estado)
     
     # jogo acaba e troca pra tela final
     w,d = tela_final.inicializa()

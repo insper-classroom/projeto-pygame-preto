@@ -2,6 +2,8 @@ import pygame
 import tela_final
 from random import randint
 import funcoes as jogo
+from random import *
+from funcoes import *
 
 TILE_FRAME = 50
 
@@ -9,7 +11,6 @@ def inicializa():
     pygame.init()
     widht = 1200
     height = 800
-    QUANT_COELHOS = 5
 
     window = pygame.display.set_mode((widht,height))
     pygame.display.set_caption('RETRO SNAKE')
@@ -41,6 +42,16 @@ def inicializa():
     x = randint(100,1100)
     y = randint(100,700)
     pos_maca_especial = pygame.Rect((x, y), (30, 40))
+    
+    #pedra
+    estado['lista_pedra'] = [] 
+    estado['lista_pedra2'] = []
+    for _ in range(5):
+        pedra_x = round(randrange(50, 1200 - 50) / (30)) * (30)
+        pedra_y = round(randrange(50, 800 - 50) / (30)) * (30)
+        estado['lista_pedra'].append((pedra_x,pedra_y,30,30))
+        estado['lista_pedra2'].append((pedra_x,pedra_y))
+        pygame.draw.rect(window,(255,255,255),(pedra_x,pedra_y,30,30))
             
     #parede    
     parede = pygame.Rect((0,0), (TILE_FRAME, TILE_FRAME))   
@@ -74,24 +85,7 @@ def inicializa():
     #imagem da parede
     dicionario['parede'] = pygame.image.load('imagens/parede2.png')
 
-    #imagens dos coelhos
-    img_coelho = pygame.image.load('imagens/coelho.png')
-    dicionario['coelho_bom'] = pygame.transform.scale(img_coelho,(40,50))
-
-    img_coelho_mal = pygame.image.load('imagens/coelho_malvado.png')
-    dicionario['coelho_mal'] = pygame.transform.scale(img_coelho_mal,(40,50))
-
-    #posicao aleatoria do coelho
-    dicionario['coelhos'] = []
-    for _ in range(QUANT_COELHOS):
-        x = randint(100,1100)
-        y = randint(100,700)        
-        coelho = {
-            'pos': pygame.Rect((x,y), (40, 50)),
-            'img': dicionario['coelho_bom'],
-            'malvado': False
-            }
-        dicionario['coelhos'].append(coelho)
+    
 
     #imagens da cobra
     img_cabeca = pygame.image.load('imagens/cobra_cabeca.png')
@@ -120,6 +114,8 @@ def inicializa():
     dicionario['cobra_quina_esquerda_cima'] = pygame.transform.rotate(img_cobra_quina, -180)
     dicionario['cobra_quina_direita_cima'] = pygame.transform.rotate(img_cobra_quina, -270)
 
+    dicionario['pedra'] = pygame.image.load('imagens/pedra.png')
+    dicionario['pedra'] = pygame.transform.scale(dicionario['pedra'],(30,40))
     #imagens das maçãs
     img_maca = pygame.image.load('imagens/maca.png')
     dicionario['maca'] = pygame.transform.scale(img_maca,(30,40))
@@ -147,10 +143,8 @@ def recebe_eventos(estado,dicionario,window):
     
     estado, x, y = jogo.movimenta(estado, x, y)
     
-    estado,dicionario = jogo.movimenta_coelho(estado,dicionario)
 
     estado, dicionario = jogo.atualiza_cobra(estado, dicionario, x, y)
-            
 
 
     cabeca = estado['cobra'][0]
@@ -167,9 +161,9 @@ def recebe_eventos(estado,dicionario,window):
 
     #colisao da cobra com a maçã especial
     estado, dicionario = jogo.colisao_maca_especial(estado, dicionario, retan_cobra)
+
+    estado, dicionario = jogo.colisao_pedra(estado,dicionario, retan_cobra)
     
-    #colisao da cobra com o coelho
-    estado, dicionario = jogo.colisao_coelho(estado, dicionario, retan_cobra)
 
     return estado['status']
 
@@ -182,12 +176,14 @@ def desenha(window,dicionario,estado):
     for parede in estado['pos_parede']:
         window.blit(dicionario['parede'],parede)
 
-    for coelho in dicionario['coelhos']:
-        window.blit(coelho['img'],(coelho['pos'][0],coelho['pos'][1]))
 
     window.blit(dicionario['maca'],(dicionario['pos_maca'][0],dicionario['pos_maca'][1]))
 
     window.blit(dicionario['maca_especial'],(dicionario['pos_maca_especial'][0],dicionario['pos_maca_especial'][1]))
+
+    #desenha pedra
+    for pedra in estado['lista_pedra2']:
+        window.blit(dicionario['pedra'],pedra)
 
     texto = dicionario['fonte'].render(f'POINTS: {estado["pontuacao"]}',False,(0,0,0))
     window.blit(texto,(10,10))
@@ -198,6 +194,7 @@ def desenha(window,dicionario,estado):
 
 def game_loop(window,dicionario,estado):
     # jogo começa
+    window,dicionario,estado = inicializa()
     while recebe_eventos(estado,dicionario,window):
         estado['clock'].tick(4)
         desenha(window,dicionario,estado)

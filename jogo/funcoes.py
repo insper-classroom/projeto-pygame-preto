@@ -1,5 +1,6 @@
 import pygame
 from random import randint
+from tela_chefão import *
 
 TILE_FRAME = 50
 
@@ -136,6 +137,19 @@ def atualiza_cobra(estado, dicionario, x, y):
                 pescoco['imag']= dicionario['cobra_quina_direita_baixo']
             if cabeca['pos'][0] > pescoco['pos'][0] and pescoco['pos'][1] > corpo1['pos'][1]: 
                 pescoco['imag']= dicionario['cobra_quina_direita_cima']
+        #TENTNDO ARRUMAR IMAGEM DO RABINHO
+        penultimo = estado['cobra'][-2]
+        if penultimo['pos'][1] == rabo['pos'][1]:
+            if penultimo['pos'][0] < rabo['pos'][0]:
+                rabo['imag'] = dicionario['cobra_rabo_esquerda']
+            if penultimo['pos'][0] > rabo['pos'][0]:
+                rabo['imag'] = dicionario['cobra_rabo_direita']
+        if penultimo['pos'][0] == rabo['pos'][0]:
+            if penultimo['pos'][1] < rabo['pos'][1]:
+                rabo['imag'] = dicionario['cobra_rabo_cima']
+            if penultimo['pos'][1] > rabo['pos'][1]:
+                rabo['imag'] = dicionario['cobra_rabo_baixo']
+        
     return estado, dicionario
 
 def colisao_parede(estado, dicionario, retan_cobra):
@@ -169,8 +183,10 @@ def colisao_maca(estado, dicionario, retan_cobra):
         }
 
         estado['cobra'].insert(0,nova_cabeca)
-
-        estado['cobra'][1]['imag'] = dicionario['cobra_corpo']
+        pescoco = estado['cobra'][1]
+        pescoco['imag'] = dicionario['cobra_corpo']
+        if nova_cabeca['pos'][1] == pescoco['pos'][1]:
+           pescoco['imag'] = dicionario['cobra_corpo_horizontal']
 
         dicionario['comida'].play()
         estado["pontuacao"] += 1
@@ -192,49 +208,10 @@ def colisao_maca_especial(estado, dicionario, retan_cobra):
         dicionario['pos_maca_especial'] = nova_maca_especial
     return estado, dicionario
 
-def colisao_coelho_parede(estado, coelho):
-    for parede in estado['pos_parede']:
-        if coelho['pos'].colliderect(parede):
-            return True, parede
-    return False, parede
 
-def movimenta_coelho(estado, dicionario):
-    for coelho in dicionario['coelhos']:
-        colisao, parede = colisao_coelho_parede(estado, coelho)
-        x, y = coelho['pos'][0], coelho['pos'][1]
-        if colisao:
-            if parede[0] > 0 and parede[1] == 0:
-                coelho['pos'] = pygame.Rect((x,y+50), (40,50))
-            elif parede[0] > 0 and parede[1] == 750:
-                coelho['pos'] = pygame.Rect((x, y-50), (40, 50))
-            elif parede[0] == 0 and parede[1] > 0:
-                coelho['pos'] = pygame.Rect((x+50, y), (40, 50))
-            else:
-                coelho['pos'] = pygame.Rect((x-50, y),(40, 50))
-        elif coelho['malvado']:
-            x += randint(-50, 50)
-            y += randint(-50, 50)
-            coelho['pos'] = pygame.Rect((x, y), (40, 50))
+def colisao_pedra(estado, dicionario,retan_cobra):
+    for pedra in estado['lista_pedra']:
+        if retan_cobra.colliderect(pedra):
+            estado, dicionario = game_over(estado, dicionario)
+            dicionario['morte'] = "ter batido na pedra"
     return estado, dicionario
-
-def colisao_coelho(estado, dicionario,retan_cobra):
-    for i, coelho in enumerate(dicionario['coelhos']):
-        if retan_cobra.colliderect(coelho['pos']):
-            if estado['xp'] < 20 and coelho['malvado'] == False:
-                coelho['img'] = dicionario['coelho_mal']
-                coelho['malvado'] = True
-            elif estado['xp'] < 20 and coelho['malvado'] == True:
-                for i in range(0, 3):
-                    try:
-                        del estado['cobra'][-1]
-                    except IndexError:
-                        estado, dicionario = game_over(estado, dicionario)
-                        dicionario['morte'] = "deixar o coelho bravo"
-                        return estado, dicionario
-                coelho['img'] = dicionario['coelho_bom']
-                coelho['malvado'] = False
-            else:
-                del dicionario['coelhos'][i]
-                estado['xp'] -= 20
-    return estado, dicionario
-
