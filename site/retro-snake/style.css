@@ -1,0 +1,192 @@
+body {
+    background-color: #F8C57B;;
+}
+
+.header {
+    position: fixed;
+}
+
+.img-header {
+    width: 100%;
+}
+
+.conteiner-itens {
+    display: flex;
+    justify-content: space-around;
+    margin-top: -4%;
+}
+
+.itens-header {
+    
+    color: #56DE24;
+    font-family: ABeeZee;
+    font-size: 42px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    text-decoration: none;
+/* 
+    text-shadow: 
+    1px px 0 black,
+    -1px -4px 0 black,
+    4px -4px 0 black,
+    -4px 4px 0 black; */
+
+    text-shadow: 2px 2px 0 black;
+}
+
+.conteiner-nome-jogo {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 5%;
+}
+
+.titulo-jogo {
+    color: #56DE24;
+
+    font-family: ABeeZee;
+    font-size: 150px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    margin-top: 5%;
+
+    text-shadow: 2px 2px 0 black;
+}
+
+.conteiner-video {
+    display: flex;
+    justify-content: center;
+
+}
+
+.video {
+
+    background-color: white;
+    width: 920px;
+    height: 500px;
+}
+
+.conteiner-titulo {
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.titulos {
+    color: #56DE24;
+    font-family: ABeeZee;
+    font-size: 80px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    text-shadow: 2px 2px 0 black;
+
+
+}
+
+
+.conteiner-texto-historia {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.texto-historia {
+    
+    color: #000;
+    text-align: center;
+    font-family: ABeeZee;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.icones-cima-imagem {
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.conteiner-imagem-jogo {
+    display: flex;
+    justify-content: center;
+}
+
+.imagem-macazinha {
+    margin-right: 26%;
+}
+
+.imagem-cobrinha {
+    margin-bottom: -1.3%;
+}
+
+.imagem-cobrinha-2 {
+    margin-right: 26%;
+    margin-bottom: -1.2%;
+}
+
+.conteiner-cobrinha {
+    margin-top: 10%;
+    display: flex;
+}
+
+.cobra-corpo-2 {
+    margin-left: -0.3%;
+    margin-top: 0.1%;
+}
+
+.cobra-cabeca {
+    margin-left: -0.5%;
+    margin-top: -0.1%;
+}
+
+.maca-especial {
+    margin-top: -5%;
+}
+
+.conteiner-autor {
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.conteiner-nome-autor {
+    display: flex;
+    justify-content: center;
+
+    color: #56DE24;
+    font-family: ABeeZee;
+    font-size: 80px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    text-decoration: none;
+/* 
+    text-shadow: 
+    1px px 0 black,
+    -1px -4px 0 black,
+    4px -4px 0 black,
+    -4px 4px 0 black; */
+
+    text-shadow: 2px 2px 0 black;
+    
+    margin-top: 1%;
+}
+
+.conteiner-botao-download {
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.botao-download {
+    width: 30%;
+}
