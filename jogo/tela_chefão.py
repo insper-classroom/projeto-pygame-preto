@@ -47,11 +47,11 @@ def inicializa():
     estado['lista_pedra'] = [] 
     estado['lista_pedra2'] = []
     for _ in range(5):
-        pedra_x = round(randrange(50, 1200 - 50) / (30)) * (30)
-        pedra_y = round(randrange(50, 800 - 50) / (30)) * (30)
-        estado['lista_pedra'].append((pedra_x,pedra_y,30,30))
+        pedra_x = round(randrange(50, 1200 - 100))
+        pedra_y = round(randrange(50, 800 - 100))
+        estado['lista_pedra'].append((pedra_x,pedra_y,5,5))
         estado['lista_pedra2'].append((pedra_x,pedra_y))
-        pygame.draw.rect(window,(255,255,255),(pedra_x,pedra_y,30,30))
+        pygame.draw.rect(window,(255,255,255),(pedra_x,pedra_y,5,5))
             
     #parede    
     parede = pygame.Rect((0,0), (TILE_FRAME, TILE_FRAME))   
